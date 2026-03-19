@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kenzaiクラウド</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#06C755;--gd:#05a847;--gl:#e8f9ef;
+  --bg:#f5f6fa;--white:#fff;
+  --text:#111;--sub:#6b7280;--border:#e5e7eb;
+  --wood:#f5ede4;--red:#ef4444;
+  --shadow:0 2px 8px rgba(0,0,0,0.10);
+  --r:14px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh;}
+
+/* Loading */
+#loading{
+  position:fixed;inset:0;background:var(--g);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;z-index:999;
+}
+#loading .logo{font-size:52px;}
+#loading .name{font-size:22px;font-weight:900;color:#fff;}
+#loading .sub{font-size:12px;color:rgba(255,255,255,.8);}
+.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-top:8px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Screens */
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* Header */
+.header{background:var(--g);padding:14px 16px;display:flex;align-items:center;gap:10px;color:#fff;flex-shrink:0;}
+.header-logo{width:30px;height:30px;background:rgba(255,255,255,.25);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.header-title{font-size:16px;font-weight:700;flex:1;}
+.header-back{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0;line-height:1;}
+.header-step{font-size:11px;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:12px;font-weight:700;}
+
+/* Steps indicator */
+.steps{background:#fff;padding:12px 16px;display:flex;gap:0;align-items:center;border-bottom:1px solid var(--border);}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;}
+.step:not(:last-child)::after{content:'';position:absolute;top:10px;left:60%;width:80%;height:2px;background:var(--border);z-index:0;}
+.step.done::after,.step.active::after{background:var(--g);}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--sub);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+.step.done .step-num{background:var(--g);color:#fff;}
+.step.active .step-num{background:var(--g);color:#fff;box-shadow:0 0 0 3px var(--gl);}
+.step-label{font-size:9px;font-weight:700;color:var(--sub);}
+.step.active .step-label{color:var(--gd);}
+
+/* Home screen */
+.home-top{background:linear-gradient(135deg,var(--g),var(--gd));padding:20px 16px;color:#fff;}
+.home-greeting{font-size:13px;opacity:.85;margin-bottom:4px;}
+.home-name{font-size:20px;font-weight:900;}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;}
+.home-card{background:#fff;border-radius:var(--r);padding:18px 14px;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:6px;border:1.5px solid transparent;transition:transform .1s;}
+.home-card:active{transform:scale(.97);}
+.home-card.primary{border-color:var(--g);background:var(--gl);}
+.home-card-icon{font-size:28px;}
+.home-card-label{font-size:13px;font-weight:700;}
+.home-card-sub{font-size:11px;color:var(--sub);}
+
+/* Scroll area */
+.scroll{overflow-y:auto;flex:1;padding-bottom:80px;}
+
+/* Section */
+.sec-head{font-size:11px;font-weight:900;color:var(--sub);padding:14px 16px 6px;letter-spacing:.05em;text-transform:uppercase;}
+
+/* Item grid */
+.item-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 8px;}
+.item-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:14px 10px;cursor:pointer;text-align:center;box-shadow:var(--shadow);transition:all .15s;}
+.item-card:active{transform:scale(.97);}
+.item-card.selected{border-color:var(--g);background:var(--gl);}
+.item-icon{font-size:26px;margin-bottom:6px;}
+.item-name{font-size:13px;font-weight:700;color:var(--text);}
+
+/* Spec list */
+.spec-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
+.spec-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow);transition:all .15s;}
+.spec-card.selected{border-color:var(--g);background:var(--gl);}
+.spec-name{font-size:13px;font-weight:700;}
+.spec-price{font-size:13px;font-weight:900;color:var(--gd);}
+
+/* Quantity */
+.qty-wrap{background:#fff;margin:0 16px;border-radius:var(--rs);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:14px;}
+.qty-label{font-size:13px;font-weight:700;color:var(--sub);}
+.qty-ctrl{display:flex;align-items:center;gap:16px;}
+.qty-btn{width:44px;height:44px;border-radius:50%;background:var(--g);color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.qty-num{font-size:36px;font-weight:900;color:var(--text);min-width:60px;text-align:center;}
+.qty-unit{font-size:13px;color:var(--sub);}
+
+/* Site list */
+.site-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
+.site-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);transition:all .15s;}
+.site-card.selected{border-color:var(--g);background:var(--gl);}
+.radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.site-card.selected .radio{border-color:var(--g);}
+.rdot{width:10px;height:10px;border-radius:50%;background:var(--g);display:none;}
+.site-card.selected .rdot{display:block;}
+.site-name{font-size:13px;font-weight:700;}
+.site-addr{font-size:11px;color:var(--sub);}
+
+/* Hoist */
+.hoist-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 8px;}
+.hoist-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:14px 10px;cursor:pointer;text-align:center;box-shadow:var(--shadow);transition:all .15s;}
+.hoist-card.selected{border-color:var(--g);background:var(--gl);}
+.hoist-icon{font-size:26px;margin-bottom:6px;}
+.hoist-name{font-size:13px;font-weight:700;}
+.hoist-price{font-size:11px;margin-top:3px;font-weight:700;}
+.hoist-price.free{color:var(--gd);}
+.hoist-price.paid{color:var(--red);}
+.hoist-note{font-size:10px;color:var(--sub);margin-top:3px;line-height:1.4;}
+
+/* Confirm */
+.conf-card{background:#fff;border-radius:var(--r);margin:0 16px 12px;padding:16px;box-shadow:var(--shadow);}
+.conf-title{font-size:11px;font-weight:900;color:var(--sub);margin-bottom:10px;letter-spacing:.04em;}
+.conf-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px;}
+.conf-row:last-child{border-bottom:none;}
+.conf-label{width:72px;flex-shrink:0;color:var(--sub);font-weight:700;}
+.conf-val{font-weight:500;}
+.total-row{display:flex;justify-content:space-between;padding:10px 0 0;margin-top:6px;border-top:2px solid var(--border);}
+.total-label{font-size:13px;font-weight:700;}
+.total-val{font-size:18px;font-weight:900;color:var(--gd);}
+
+/* Complete */
+.complete-top{background:linear-gradient(135deg,var(--g),var(--gd));padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;}
+.complete-icon{font-size:56px;}
+.complete-title{font-size:20px;font-weight:900;}
+.complete-sub{font-size:12px;opacity:.85;}
+.complete-timer{background:rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;margin-top:4px;font-size:12px;font-weight:700;}
+.order-num{font-size:22px;font-weight:900;color:var(--g);text-align:center;padding:8px 0;}
+
+/* Bottom bar */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px;display:flex;flex-direction:column;gap:8px;}
+.primary-btn{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;}
+.primary-btn:disabled{background:#ccc;cursor:not-allowed;}
+.secondary-btn{width:100%;padding:11px;background:#fff;color:var(--g);border:2px solid var(--g);border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;}
+
+/* History */
+.hist-item{background:#fff;margin:0 16px 10px;border-radius:var(--rs);padding:14px;box-shadow:var(--shadow);}
+.hist-top{display:flex;justify-content:space-between;margin-bottom:6px;}
+.hist-id{font-size:11px;color:var(--sub);font-weight:700;}
+.hist-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;}
+.s-done{background:#dcfce7;color:#166534;}
+.s-transit{background:#dbeafe;color:#1e40af;}
+.s-wait{background:#fef9c3;color:#854d0e;}
+.hist-name{font-size:14px;font-weight:700;margin-bottom:2px;}
+.hist-meta{font-size:11px;color:var(--sub);}
+
+/* Toast */
+.toast{position:fixed;top:70px;left:12px;right:12px;background:#111;color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;transform:translateY(-80px);opacity:0;transition:all .3s;pointer-events:none;text-align:center;}
+.toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="logo">🏗️</div>
+  <div class="name">kenzaiクラウド</div>
+  <div class="sub">資材発注プラットフォーム</div>
+  <div class="spinner"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== HOME ===== -->
+<div class="screen" id="sc-home">
+  <div class="header">
+    <div class="header-logo">🏗️</div>
+    <span class="header-title">kenzaiクラウド</span>
+  </div>
+  <div class="home-top">
+    <div class="home-greeting">こんにちは</div>
+    <div class="home-name" id="user-name">読み込み中...</div>
+  </div>
+  <div class="home-grid">
+    <div class="home-card primary" onclick="startOrder()">
+      <div class="home-card-icon">🛒</div>
+      <div class="home-card-label">新規注文</div>
+      <div class="home-card-sub">2時間以内に届く</div>
+    </div>
+    <div class="home-card" onclick="go('sc-hist')">
+      <div class="home-card-icon">📋</div>
+      <div class="home-card-label">注文履歴</div>
+      <div class="home-card-sub">過去の注文を確認</div>
+    </div>
+    <div class="home-card" onclick="showToast('現場登録（近日公開）')">
+      <div class="home-card-icon">📍</div>
+      <div class="home-card-label">現場登録</div>
+      <div class="home-card-sub">配送先を登録</div>
+    </div>
+    <div class="home-card" onclick="showToast('メンバー招待（近日公開）')">
+      <div class="home-card-icon">👷</div>
+      <div class="home-card-label">メンバー招待</div>
+      <div class="home-card-sub">現場仲間を追加</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STEP1: 品目選択 ===== -->
+<div class="screen" id="sc-item">
+  <div class="header">
+    <button class="header-back" onclick="go('sc-home')">‹</button>
+    <span class="header-title">品目を選ぶ</span>
+    <span class="header-step">STEP 1/4</span>
+  </div>
+  <div class="steps">
+    <div class="step active"><div class="step-num">1</div><div class="step-label">品目</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-label">規格・数量</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">配送条件</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-label">確認</div></div>
+  </div>
+  <div class="scroll">
+    <div class="sec-head">📦 品目を選んでください</div>
+    <div class="item-grid" id="item-grid"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="primary-btn" id="item-next-btn" onclick="goToSpec()" disabled>次へ →</button>
+  </div>
+</div>
+
+<!-- ===== STEP2: 規格・数量 ===== -->
+<div class="screen" id="sc-spec">
+  <div class="header">
+    <button class="header-back" onclick="go('sc-item')">‹</button>
+    <span class="header-title" id="spec-title">規格を選ぶ</span>
+    <span class="header-step">STEP 2/4</span>
+  </div>
+  <div class="steps">
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">品目</div></div>
+    <div class="step active"><div class="step-num">2</div><div class="step-label">規格・数量</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">配送条件</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-label">確認</div></div>
+  </div>
+  <div class="scroll">
+    <div class="sec-head">📐 規格を選んでください</div>
+    <div class="spec-list" id="spec-list"></div>
+    <div class="sec-head">🔢 数量</div>
+    <div class="qty-wrap">
+      <div class="qty-label">数量を選んでください</div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="qty-display">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">＋</button>
+      </div>
+      <div class="qty-unit">個 / 枚 / 本</div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="primary-btn" id="spec-next-btn" onclick="goToDelivery()" disabled>次へ →</button>
+  </div>
+</div>
+
+<!-- ===== STEP3: 配送条件 ===== -->
+<div class="screen" id="sc-delivery">
+  <div class="header">
+    <button class="header-back" onclick="go('sc-spec')">‹</button>
+    <span class="header-title">配送条件</span>
+    <span class="header-step">STEP 3/4</span>
+  </div>
+  <div class="steps">
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">品目</div></div>
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">規格・数量</div></div>
+    <div class="step active"><div class="step-num">3</div><div class="step-label">配送条件</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-label">確認</div></div>
+  </div>
+  <div class="scroll">
+    <div class="sec-head">📍 配送先現場を選ぶ</div>
+    <div class="site-list" id="site-list"></div>
+    <div class="sec-head">🏗️ 荷揚げオプション</div>
+    <div class="hoist-grid">
+      <div class="hoist-card selected" id="hoist-no" onclick="selHoist('no')">
+        <div class="hoist-icon">🚛</div>
+        <div class="hoist-name">荷揚げなし</div>
+        <div class="hoist-price free">追加料金なし</div>
+        <div class="hoist-note">車上渡し</div>
+      </div>
+      <div class="hoist-card" id="hoist-yes" onclick="selHoist('yes')">
+        <div class="hoist-icon">🏗️</div>
+        <div class="hoist-name">荷揚げあり</div>
+        <div class="hoist-price paid">＋¥8,000</div>
+        <div class="hoist-note">指定フロアまで搬入</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="primary-btn" id="delivery-next-btn" onclick="goToConfirm()" disabled>確認画面へ →</button>
+  </div>
+</div>
+
+<!-- ===== STEP4: 確認 ===== -->
+<div class="screen" id="sc-confirm">
+  <div class="header">
+    <button class="header-back" onclick="go('sc-delivery')">‹</button>
+    <span class="header-title">注文内容の確認</span>
+    <span class="header-step">STEP 4/4</span>
+  </div>
+  <div class="steps">
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">品目</div></div>
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">規格・数量</div></div>
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">配送条件</div></div>
+    <div class="step active"><div class="step-num">4</div><div class="step-label">確認</div></div>
+  </div>
+  <div class="scroll">
+    <div class="sec-head" style="padding-top:14px;">📋 注文内容</div>
+    <div class="conf-card">
+      <div class="conf-title">商品情報</div>
+      <div class="conf-row"><span class="conf-label">品目</span><span class="conf-val" id="conf-item"></span></div>
+      <div class="conf-row"><span class="conf-label">規格</span><span class="conf-val" id="conf-spec"></span></div>
+      <div class="conf-row"><span class="conf-label">数量</span><span class="conf-val" id="conf-qty"></span></div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-title">配送情報</div>
+      <div class="conf-row"><span class="conf-label">現場</span><span class="conf-val" id="conf-site"></span></div>
+      <div class="conf-row"><span class="conf-label">荷揚げ</span><span class="conf-val" id="conf-hoist"></span></div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-title">金額</div>
+      <div class="conf-row"><span class="conf-label">商品代金</span><span class="conf-val" id="conf-subtotal"></span></div>
+      <div class="conf-row" id="conf-hoist-row" style="display:none"><span class="conf-label">荷揚げ料</span><span class="conf-val" style="color:var(--red)">¥8,000</span></div>
+      <div class="total-row"><span class="total-label">合計（税込）</span><span class="total-val" id="conf-total"></span></div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="primary-btn" onclick="submitOrder()">✅ 注文を確定する</button>
+    <button class="secondary-btn" onclick="go('sc-item')">🔄 最初からやり直す</button>
+  </div>
+</div>
+
+<!-- ===== COMPLETE ===== -->
+<div class="screen" id="sc-complete">
+  <div class="complete-top">
+    <div class="complete-icon">✅</div>
+    <div class="complete-title">注文が確定しました</div>
+    <div class="complete-sub">担当者が手配を開始します</div>
+    <div class="complete-timer">⏱ 約2時間後に現場到着予定</div>
+  </div>
+  <div style="padding:14px;">
+    <div class="conf-card">
+      <div class="conf-title">📋 注文番号</div>
+      <div class="order-num" id="order-num">#ORD-0001</div>
+    </div>
+    <div class="conf-card">
+      <div class="conf-title">📍 配送サマリ</div>
+      <div class="conf-row"><span class="conf-label">品目</span><span class="conf-val" id="done-item"></span></div>
+      <div class="conf-row"><span class="conf-label">数量</span><span class="conf-val" id="done-qty"></span></div>
+      <div class="conf-row"><span class="conf-label">現場</span><span class="conf-val" id="done-site"></span></div>
+      <div class="conf-row"><span class="conf-label">合計</span><span class="conf-val" id="done-total" style="font-weight:900;color:var(--gd);"></span></div>
+    </div>
+  </div>
+  <div style="padding:0 16px 80px;">
+    <button class="primary-btn" onclick="go('sc-home')">ホームに戻る</button>
+  </div>
+</div>
+
+<!-- ===== HISTORY ===== -->
+<div class="screen" id="sc-hist">
+  <div class="header">
+    <button class="header-back" onclick="go('sc-home')">‹</button>
+    <span class="header-title">注文履歴</span>
+  </div>
+  <div class="scroll" style="padding:12px 0;">
+    <div class="hist-item">
+      <div class="hist-top"><span class="hist-id">#ORD-0047 · 3/17</span><span class="hist-status s-done">✅ 納品済</span></div>
+      <div class="hist-name">石膏ボード 12.5mm ×10枚</div>
+      <div class="hist-meta">世田谷区 リフォームA / ¥6,800</div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-top"><span class="hist-id">#ORD-0043 · 本日</span><span class="hist-status s-transit">🚛 配送中</span></div>
+      <div class="hist-name">ラワンベニヤ 3m ×4枚</div>
+      <div class="hist-meta">調布市 リフォームA / ¥7,200</div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-top"><span class="hist-id">#ORD-0038 · 3/14</span><span class="hist-status s-done">✅ 納品済</span></div>
+      <div class="hist-name">針葉樹合板 12m ×6枚</div>
+      <div class="hist-meta">世田谷区 リフォームB / ¥12,600</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== データ定義 =====
+var ITEMS = [
+  { name:"石膏ボード",   icon:"🧱", specs:[
+    { name:"9.5mm 3×6",  price:500  },
+    { name:"12.5mm 3×6", price:680  },
+    { name:"15mm 3×6",   price:820  }
+  ]},
+  { name:"ラワンベニヤ", icon:"🪵", specs:[
+    { name:"3m 3×6",  price:1800 },
+    { name:"12m 3×6", price:2400 },
+    { name:"24m 3×6", price:3800 }
+  ]},
+  { name:"針葉樹合板",   icon:"🌲", specs:[
+    { name:"9m 3×6",  price:1600 },
+    { name:"12m 3×6", price:2100 },
+    { name:"24m 3×6", price:2900 }
+  ]},
+  { name:"タルキ 赤松",  icon:"📏", specs:[
+    { name:"45×45 4m", price:450 },
+    { name:"45×60 4m", price:580 }
+  ]},
+  { name:"杉 構造材",    icon:"🏗️", specs:[
+    { name:"105×105mm 3m", price:3200 },
+    { name:"90×90mm 3m",   price:2800 }
+  ]}
+];
+
+var SITES = [
+  { name:"世田谷区 リフォームA", addr:"世田谷区若林3-12-8" },
+  { name:"世田谷区 リフォームB", addr:"世田谷区下馬1-8-3" },
+  { name:"調布市 リフォームA",   addr:"調布市布田4-1-5" },
+  { name:"調布市 リフォームB",   addr:"調布市国領町2-5-6" },
+  { name:"その他",               addr:"担当者に確認" }
+];
+
+// GASのWebhook URL（後で変更）
+var GAS_URL = "YOUR_GAS_URL_HERE";
+
+// ===== 発注状態 =====
+var order = {
+  item: null, itemName: "", itemIcon: "",
+  spec: null, specName: "", specPrice: 0,
+  qty: 1,
+  site: null, siteName: "",
+  hoist: "no"
+};
+
+// ===== LIFF初期化 =====
+window.addEventListener('load', function() {
+  liff.init({ liffId: "2009543783-09mEjuvC" })
+    .then(function() {
+      document.getElementById('loading').style.display = 'none';
+      if (liff.isLoggedIn()) {
+        liff.getProfile().then(function(profile) {
+          document.getElementById('user-name').textContent = profile.displayName + " さん";
+        });
+      } else {
+        document.getElementById('user-name').textContent = "ゲスト さん";
+      }
+      go('sc-home');
+      buildItemGrid();
+      buildSiteList();
+    })
+    .catch(function(err) {
+      document.getElementById('loading').style.display = 'none';
+      go('sc-home');
+      document.getElementById('user-name').textContent = "さん";
+      buildItemGrid();
+      buildSiteList();
+    });
+});
+
+// ===== 画面遷移 =====
+function go(id) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startOrder() {
+  order = { item:null, itemName:"", itemIcon:"", spec:null, specName:"", specPrice:0, qty:1, site:null, siteName:"", hoist:"no" };
+  document.getElementById('item-next-btn').disabled = true;
+  document.getElementById('spec-next-btn').disabled = true;
+  document.getElementById('delivery-next-btn').disabled = true;
+  document.querySelectorAll('.item-card').forEach(function(c) { c.classList.remove('selected'); });
+  document.getElementById('qty-display').textContent = '1';
+  document.getElementById('hoist-no').classList.add('selected');
+  document.getElementById('hoist-yes').classList.remove('selected');
+  go('sc-item');
+}
+
+// ===== 品目グリッド =====
+function buildItemGrid() {
+  var grid = document.getElementById('item-grid');
+  grid.innerHTML = '';
+  ITEMS.forEach(function(item, i) {
+    var card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = '<div class="item-icon">' + item.icon + '</div><div class="item-name">' + item.name + '</div>';
+    card.onclick = function() {
+      document.querySelectorAll('.item-card').forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      order.item = i;
+      order.itemName = item.name;
+      order.itemIcon = item.icon;
+      document.getElementById('item-next-btn').disabled = false;
+    };
+    grid.appendChild(card);
+  });
+}
+
+function goToSpec() {
+  var item = ITEMS[order.item];
+  document.getElementById('spec-title').textContent = item.name + "の規格";
+  var list = document.getElementById('spec-list');
+  list.innerHTML = '';
+  order.spec = null;
+  order.specName = '';
+  order.specPrice = 0;
+  document.getElementById('spec-next-btn').disabled = true;
+  item.specs.forEach(function(spec, i) {
+    var card = document.createElement('div');
+    card.className = 'spec-card';
+    card.innerHTML = '<span class="spec-name">' + spec.name + '</span><span class="spec-price">¥' + spec.price.toLocaleString() + '/枚</span>';
+    card.onclick = function() {
+      document.querySelectorAll('.spec-card').forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      order.spec = i;
+      order.specName = spec.name;
+      order.specPrice = spec.price;
+      document.getElementById('spec-next-btn').disabled = false;
+    };
+    list.appendChild(card);
+  });
+  order.qty = 1;
+  document.getElementById('qty-display').textContent = '1';
+  go('sc-spec');
+}
+
+// ===== 数量 =====
+function changeQty(d) {
+  order.qty = Math.max(1, order.qty + d);
+  document.getElementById('qty-display').textContent = order.qty;
+}
+
+function goToDelivery() {
+  go('sc-delivery');
+}
+
+// ===== 現場リスト =====
+function buildSiteList() {
+  var list = document.getElementById('site-list');
+  list.innerHTML = '';
+  SITES.forEach(function(site, i) {
+    var card = document.createElement('div');
+    card.className = 'site-card';
+    card.innerHTML = '<div class="radio"><div class="rdot"></div></div><div><div class="site-name">' + site.name + '</div><div class="site-addr">' + site.addr + '</div></div>';
+    card.onclick = function() {
+      document.querySelectorAll('.site-card').forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      order.site = i;
+      order.siteName = site.name;
+      document.getElementById('delivery-next-btn').disabled = false;
+    };
+    list.appendChild(card);
+  });
+}
+
+// ===== 荷揚げ =====
+function selHoist(type) {
+  order.hoist = type;
+  document.getElementById('hoist-no').classList.toggle('selected', type === 'no');
+  document.getElementById('hoist-yes').classList.toggle('selected', type === 'yes');
+}
+
+// ===== 確認画面 =====
+function goToConfirm() {
+  var subtotal = order.specPrice * order.qty;
+  var hoistFee = order.hoist === 'yes' ? 8000 : 0;
+  var total    = subtotal + hoistFee;
+  document.getElementById('conf-item').textContent     = order.itemIcon + ' ' + order.itemName;
+  document.getElementById('conf-spec').textContent     = order.specName;
+  document.getElementById('conf-qty').textContent      = order.qty + ' 個';
+  document.getElementById('conf-site').textContent     = order.siteName;
+  document.getElementById('conf-hoist').textContent    = order.hoist === 'yes' ? '🏗️ あり（＋¥8,000）' : 'なし（車上渡し）';
+  document.getElementById('conf-subtotal').textContent = '¥' + subtotal.toLocaleString();
+  document.getElementById('conf-total').textContent    = '¥' + total.toLocaleString();
+  document.getElementById('conf-hoist-row').style.display = order.hoist === 'yes' ? 'flex' : 'none';
+  go('sc-confirm');
+}
+
+// ===== 注文確定 =====
+function submitOrder() {
+  var subtotal  = order.specPrice * order.qty;
+  var hoistFee  = order.hoist === 'yes' ? 8000 : 0;
+  var total     = subtotal + hoistFee;
+  var orderNum  = '#ORD-' + String(Math.floor(Math.random() * 9000) + 1000);
+  var timestamp = new Date().toLocaleString('ja-JP');
+
+  // GASに送信
+  var payload = {
+    timestamp:  timestamp,
+    orderNum:   orderNum,
+    item:       order.itemName,
+    spec:       order.specName,
+    qty:        order.qty,
+    site:       order.siteName,
+    hoist:      order.hoist === 'yes' ? 'あり（＋¥8,000）' : 'なし',
+    subtotal:   subtotal,
+    hoistFee:   hoistFee,
+    total:      total
+  };
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(function() {});
+
+  // 完了画面へ
+  document.getElementById('order-num').textContent   = orderNum;
+  document.getElementById('done-item').textContent   = order.itemName + ' ' + order.specName;
+  document.getElementById('done-qty').textContent    = order.qty + ' 個';
+  document.getElementById('done-site').textContent   = order.siteName;
+  document.getElementById('done-total').textContent  = '¥' + total.toLocaleString();
+  go('sc-complete');
+}
+
+// ===== Toast =====
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2200);
+}
+</script>
+</body>
+</html>
