@@ -619,15 +619,32 @@ var companyPrices   = {};
 window.addEventListener('load', function() {
   buildCatTabs();
   buildDateScroll();
-  // ログイン済みチェック
+
   if (currentCompany && currentUser) {
-    loadCompanyPrices(currentCompany, function() {
-      initHome();
-    });
+    // ログイン済み → 先にホーム画面を即表示
+    initHome();
+    // 価格はバックグラウンドで取得（表示をブロックしない）
+    loadCompanyPricesBackground(currentCompany);
   } else {
     go('sc-login');
   }
 });
+
+// バックグラウンドで価格取得（表示をブロックしない）
+function loadCompanyPricesBackground(company) {
+  fetch(GAS_URL + '?action=getPrices&company=' + encodeURIComponent(company))
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        companyPrices = data.prices || {};
+        // 商品画面が開いている場合は再描画
+        if (document.getElementById('sc-cart').classList.contains('active')) {
+          showCategory(currentCatIndex || 0);
+        }
+      }
+    })
+    .catch(function() {});
+}
 
 // ===== ログイン =====
 function doLogin() {
@@ -987,7 +1004,9 @@ function buildCatTabs() {
   });
 }
 
+var currentCatIndex = 0;
 function showCategory(idx) {
+  currentCatIndex = idx;
   var area = document.getElementById('product-area');
   area.innerHTML = '';
   CATEGORIES[idx].items.forEach(function(group) {
