@@ -227,7 +227,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   <div style="padding:0 0 4px;">
     <div style="font-size:11px;font-weight:900;color:var(--sub);padding:4px 14px 8px;letter-spacing:.05em;">📊 今月の発注サマリ</div>
     <div class="monthly-card">
-      <div class="monthly-title">TODAY'S MONTH SUMMARY</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div class="monthly-title" style="margin-bottom:0;">TODAY'S MONTH SUMMARY</div>
+        <button onclick="refreshAll()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 更新</button>
+      </div>
       <div class="monthly-grid">
         <div class="monthly-stat">
           <div class="monthly-num green" id="monthly-total">--</div>
@@ -259,7 +262,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   <div class="scroll" style="padding-top:10px;">
     <div class="site-count-bar">
       <span>登録現場数</span>
-      <span id="site-count-label">0 / 10件</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="site-count-label">0 / 10件</span>
+        <button onclick="refreshSiteStats()" style="background:var(--g);border:none;color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 更新</button>
+      </div>
     </div>
     <div class="sec-head">登録済み現場</div>
     <div id="site-list-area"></div>
@@ -1007,6 +1013,17 @@ function submitOrder() {
   document.getElementById('done-total').textContent     = '¥'+total.toLocaleString();
   document.getElementById('complete-timer').textContent = '⏱ '+delivery.date+' '+delivery.time+' 到着予定';
   go('sc-complete');
+}
+
+// ===== 更新関数 =====
+function refreshAll() {
+  loadMonthlySummary();
+  showToast('🔄 更新しました！', true);
+}
+
+function refreshSiteStats() {
+  loadSiteStats();
+  showToast('🔄 更新しました！', true);
 }
 
 // ===== ユーティリティ =====
