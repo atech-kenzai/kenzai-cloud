@@ -626,23 +626,29 @@ function goToConfirm() {
 // ===== 注文確定 =====
 function submitOrder() {
   var subtotal = 0;
-  var itemLines = [];
+  var itemsArray = [];
+
   Object.keys(cart).forEach(function(name) {
-    var item = cart[name];
-    subtotal += item.price * item.qty;
-    itemLines.push(name + ' ×' + item.qty + '（¥' + (item.price * item.qty).toLocaleString() + '）');
+    var item     = cart[name];
+    var itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
+    itemsArray.push({
+      name:     name,
+      qty:      item.qty,
+      price:    item.price,
+      subtotal: itemTotal
+    });
   });
+
   var hoistFee  = delivery.hoist === 'yes' ? 8000 : 0;
   var total     = subtotal + hoistFee;
   var orderNum  = '#ORD-' + String(Math.floor(Math.random() * 9000) + 1000);
   var timestamp = new Date().toLocaleString('ja-JP');
-  var itemCount = Object.keys(cart).length;
 
   var payload = {
     timestamp: timestamp,
     orderNum:  orderNum,
-    items:     itemLines.join('\n'),
-    itemCount: itemCount,
+    items:     itemsArray,
     site:      delivery.site,
     date:      delivery.date,
     time:      delivery.time,
@@ -654,17 +660,17 @@ function submitOrder() {
 
   fetch(GAS_URL, {
     method: 'POST',
-    mode: 'no-cors',
+    mode:   'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body:   JSON.stringify(payload)
   }).catch(function(){});
 
   // 完了画面
-  document.getElementById('order-num').textContent     = orderNum;
-  document.getElementById('done-site').textContent     = delivery.site;
-  document.getElementById('done-datetime').textContent = delivery.date + ' ' + delivery.time;
-  document.getElementById('done-items').textContent    = itemCount + '品目';
-  document.getElementById('done-total').textContent    = '¥' + total.toLocaleString();
+  document.getElementById('order-num').textContent      = orderNum;
+  document.getElementById('done-site').textContent      = delivery.site;
+  document.getElementById('done-datetime').textContent  = delivery.date + ' ' + delivery.time;
+  document.getElementById('done-items').textContent     = itemsArray.length + '品目';
+  document.getElementById('done-total').textContent     = '¥' + total.toLocaleString();
   document.getElementById('complete-timer').textContent = '⏱ ' + delivery.date + ' ' + delivery.time + ' 到着予定';
   go('sc-complete');
 }
