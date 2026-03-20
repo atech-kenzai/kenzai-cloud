@@ -435,26 +435,32 @@ var order = {
 // ===== LIFF初期化 =====
 window.addEventListener('load', function() {
   liff.init({ liffId: "2009543783-09mEjuvC" })
-    .then(function() {
-      document.getElementById('loading').style.display = 'none';
+  .then(function() {
+    document.getElementById('loading').style.display = 'none';
+    try {
       if (liff.isLoggedIn()) {
         liff.getProfile().then(function(profile) {
           document.getElementById('user-name').textContent = profile.displayName + " さん";
+        }).catch(function() {
+          document.getElementById('user-name').textContent = "さん";
         });
       } else {
-        document.getElementById('user-name').textContent = "ゲスト さん";
+        liff.login();
       }
-      go('sc-home');
-      buildItemGrid();
-      buildSiteList();
-    })
-    .catch(function(err) {
-      document.getElementById('loading').style.display = 'none';
-      go('sc-home');
+    } catch(e) {
       document.getElementById('user-name').textContent = "さん";
-      buildItemGrid();
-      buildSiteList();
-    });
+    }
+    go('sc-home');
+    buildItemGrid();
+    buildSiteList();
+  })
+  .catch(function(err) {
+    document.getElementById('loading').style.display = 'none';
+    go('sc-home');
+    document.getElementById('user-name').textContent = "さん";
+    buildItemGrid();
+    buildSiteList();
+  });
 });
 
 // ===== 画面遷移 =====
