@@ -629,7 +629,7 @@ function submitOrder() {
   var itemsArray = [];
 
   Object.keys(cart).forEach(function(name) {
-    var item     = cart[name];
+    var item      = cart[name];
     var itemTotal = item.price * item.qty;
     subtotal += itemTotal;
     itemsArray.push({
@@ -659,13 +659,12 @@ function submitOrder() {
   };
 
   fetch(GAS_URL, {
-    method: 'POST',
-    mode:   'no-cors',
+    method:  'POST',
+    mode:    'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body:   JSON.stringify(payload)
+    body:    JSON.stringify(payload)
   }).catch(function(){});
 
-  // 完了画面
   document.getElementById('order-num').textContent      = orderNum;
   document.getElementById('done-site').textContent      = delivery.site;
   document.getElementById('done-datetime').textContent  = delivery.date + ' ' + delivery.time;
