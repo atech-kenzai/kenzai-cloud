@@ -205,21 +205,29 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- ===== 会社選択（初回のみ） ===== -->
-<div class="screen active" id="sc-company">
+<!-- ===== ログイン画面 ===== -->
+<div class="screen active" id="sc-login">
   <div class="company-screen">
     <div class="company-logo">🏗️</div>
     <div class="company-app-name">kenzaiクラウド</div>
-    <div class="company-sub">資材発注プラットフォーム<br>初回設定を行ってください</div>
+    <div class="company-sub">資材発注プラットフォーム</div>
     <div class="company-form">
-      <div class="company-form-title">🏢 会社・工務店を選択</div>
-      <div class="company-select-wrap">
-        <select class="company-select" id="company-select">
-          <option value="">-- 会社名を選択してください --</option>
-        </select>
+      <div class="company-form-title">🔐 ログイン</div>
+      <div class="form-group">
+        <label class="form-label">ログインID</label>
+        <input type="text" class="form-input" id="login-id" placeholder="例：yamada001" autocomplete="username">
       </div>
-      <button class="company-btn" onclick="selectCompany()">決定 →</button>
-      <div class="company-note">※ 次回からは自動でログインされます</div>
+      <div class="form-group">
+        <label class="form-label">パスワード</label>
+        <input type="password" class="form-input" id="login-pw" placeholder="パスワードを入力" autocomplete="current-password">
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label">スマホ番号</label>
+        <input type="tel" class="form-input" id="login-phone" placeholder="例：090-1234-5678">
+      </div>
+      <div id="login-error" style="display:none;background:#fee2e2;color:#991b1b;padding:10px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:12px;text-align:center;"></div>
+      <button class="company-btn" onclick="doLogin()">ログイン →</button>
+      <div class="company-note">※ ログイン情報はa-techから発行されます</div>
     </div>
   </div>
 </div>
@@ -233,7 +241,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   <div class="home-top">
     <div class="home-greeting">こんにちは</div>
     <div class="home-name" id="home-company-name">さん</div>
-    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;margin-top:8px;font-size:12px;font-weight:700;cursor:pointer;" onclick="changeCompany()">🏢 <span id="home-company-label">会社未設定</span> ›</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;">🏢 <span id="home-company-label">会社未設定</span></div>
+      <div style="background:rgba(255,255,255,.15);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;" onclick="doLogout()">ログアウト</div>
+    </div>
   </div>
   <div class="home-grid">
     <div class="home-card primary" onclick="startOrder()">
@@ -599,65 +610,84 @@ var cart     = {};
 var delivery = { site:"", address:"", contact:"", phone:"", siteTime:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
 var sites    = []; // スプシから取得した現場リスト
 
-// ===== 会社・価格管理 =====
-var currentCompany = localStorage.getItem('kenzai_company') || '';
-var companyPrices  = {};
-var companyList    = [];
+// ===== 認証・会社管理 =====
+var currentCompany  = localStorage.getItem('kenzai_company')  || '';
+var currentUser     = localStorage.getItem('kenzai_user')     || '';
+var companyPrices   = {};
 
 // ===== 起動 =====
 window.addEventListener('load', function() {
   buildCatTabs();
   buildDateScroll();
-  loadCompanyList();
+  // ログイン済みチェック
+  if (currentCompany && currentUser) {
+    loadCompanyPrices(currentCompany, function() {
+      initHome();
+    });
+  } else {
+    go('sc-login');
+  }
 });
 
-function loadCompanyList() {
-  fetch(GAS_URL + '?action=getCompanyList')
+// ===== ログイン =====
+function doLogin() {
+  var id    = document.getElementById('login-id').value.trim();
+  var pw    = document.getElementById('login-pw').value.trim();
+  var phone = document.getElementById('login-phone').value.trim();
+
+  if (!id || !pw || !phone) {
+    showLoginError('ID・パスワード・スマホ番号を全て入力してください');
+    return;
+  }
+
+  showLoading(true);
+
+  fetch(GAS_URL + '?action=login&id=' + encodeURIComponent(id)
+    + '&pw=' + encodeURIComponent(pw)
+    + '&phone=' + encodeURIComponent(phone))
     .then(function(r){ return r.json(); })
     .then(function(data) {
+      showLoading(false);
       if (data.status === 'ok') {
-        companyList = data.companies || [];
-        var sel = document.getElementById('company-select');
-        sel.innerHTML = '<option value="">-- 会社名を選択してください --</option>';
-        companyList.forEach(function(c) {
-          var opt = document.createElement('option');
-          opt.value = c; opt.textContent = c;
-          if (c === currentCompany) opt.selected = true;
-          sel.appendChild(opt);
-        });
-      }
-      // 会社が設定済みなら直接ホームへ
-      if (currentCompany) {
-        loadCompanyPrices(currentCompany, function() {
+        currentCompany = data.company;
+        currentUser    = data.name;
+        localStorage.setItem('kenzai_company', data.company);
+        localStorage.setItem('kenzai_user',    data.name);
+        hideLoginError();
+        loadCompanyPrices(data.company, function() {
           initHome();
         });
       } else {
-        go('sc-company');
+        showLoginError(data.message || 'ID・パスワード・スマホ番号が正しくありません');
       }
     })
     .catch(function() {
-      // オフライン時は保存済み会社でホームへ
-      if (currentCompany) {
-        initHome();
-      } else {
-        go('sc-company');
-      }
+      showLoading(false);
+      showLoginError('通信エラーが発生しました。再度お試しください');
     });
 }
 
-function selectCompany() {
-  var sel = document.getElementById('company-select');
-  var company = sel.value;
-  if (!company) { showToast('会社名を選択してください'); return; }
-  currentCompany = company;
-  localStorage.setItem('kenzai_company', company);
-  loadCompanyPrices(company, function() {
-    initHome();
-  });
+function showLoginError(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = '❌ ' + msg;
+  el.style.display = 'block';
 }
 
-function changeCompany() {
-  go('sc-company');
+function hideLoginError() {
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function doLogout() {
+  if (!confirm('ログアウトしますか？')) return;
+  localStorage.removeItem('kenzai_company');
+  localStorage.removeItem('kenzai_user');
+  currentCompany = '';
+  currentUser    = '';
+  companyPrices  = {};
+  document.getElementById('login-id').value    = '';
+  document.getElementById('login-pw').value    = '';
+  document.getElementById('login-phone').value = '';
+  go('sc-login');
 }
 
 function loadCompanyPrices(company, callback) {
@@ -675,7 +705,7 @@ function loadCompanyPrices(company, callback) {
 }
 
 function initHome() {
-  document.getElementById('home-company-name').textContent = currentCompany + ' さん';
+  document.getElementById('home-company-name').textContent = (currentUser || currentCompany) + ' さん';
   document.getElementById('home-company-label').textContent = currentCompany;
   go('sc-home');
   loadSites();
