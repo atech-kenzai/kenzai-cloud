@@ -10,7 +10,7 @@
   --g:#06C755;--gd:#05a847;--gl:#e8f9ef;
   --bg:#f5f6fa;--white:#fff;
   --text:#111;--sub:#6b7280;--border:#e5e7eb;
-  --wood:#f5ede4;--red:#ef4444;
+  --red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;
   --shadow:0 2px 8px rgba(0,0,0,0.10);
   --r:14px;--rs:8px;
 }
@@ -18,12 +18,16 @@
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh;}
 .screen{display:none;min-height:100vh;flex-direction:column;}
 .screen.active{display:flex;}
+
+/* Header */
 .header{background:var(--g);padding:14px 16px;display:flex;align-items:center;gap:10px;color:#fff;flex-shrink:0;}
 .header-logo{width:30px;height:30px;background:rgba(255,255,255,.25);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;}
 .header-title{font-size:16px;font-weight:700;flex:1;}
 .header-back{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0;line-height:1;}
 .header-step{font-size:11px;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:12px;font-weight:700;}
-.steps{background:#fff;padding:12px 16px;display:flex;gap:0;align-items:center;border-bottom:1px solid var(--border);}
+
+/* Steps */
+.steps{background:#fff;padding:12px 16px;display:flex;gap:0;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;}
 .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;}
 .step:not(:last-child)::after{content:'';position:absolute;top:10px;left:60%;width:80%;height:2px;background:var(--border);z-index:0;}
 .step.done::after,.step.active::after{background:var(--g);}
@@ -32,6 +36,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .step.active .step-num{background:var(--g);color:#fff;box-shadow:0 0 0 3px var(--gl);}
 .step-label{font-size:9px;font-weight:700;color:var(--sub);}
 .step.active .step-label{color:var(--gd);}
+
+/* Home */
 .home-top{background:linear-gradient(135deg,var(--g),var(--gd));padding:20px 16px;color:#fff;}
 .home-greeting{font-size:13px;opacity:.85;margin-bottom:4px;}
 .home-name{font-size:20px;font-weight:900;}
@@ -42,34 +48,70 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .home-card-icon{font-size:28px;}
 .home-card-label{font-size:13px;font-weight:700;}
 .home-card-sub{font-size:11px;color:var(--sub);}
-.scroll{overflow-y:auto;flex:1;padding-bottom:80px;}
-.sec-head{font-size:11px;font-weight:900;color:var(--sub);padding:14px 16px 6px;letter-spacing:.05em;text-transform:uppercase;}
-.item-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 8px;}
-.item-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:14px 10px;cursor:pointer;text-align:center;box-shadow:var(--shadow);transition:all .15s;}
-.item-card:active{transform:scale(.97);}
-.item-card.selected{border-color:var(--g);background:var(--gl);}
-.item-icon{font-size:26px;margin-bottom:6px;}
-.item-name{font-size:13px;font-weight:700;color:var(--text);}
-.spec-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
-.spec-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow);transition:all .15s;}
-.spec-card.selected{border-color:var(--g);background:var(--gl);}
-.spec-name{font-size:13px;font-weight:700;}
-.spec-price{font-size:13px;font-weight:900;color:var(--gd);}
-.qty-wrap{background:#fff;margin:0 16px;border-radius:var(--rs);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:14px;}
-.qty-label{font-size:13px;font-weight:700;color:var(--sub);}
-.qty-ctrl{display:flex;align-items:center;gap:16px;}
-.qty-btn{width:44px;height:44px;border-radius:50%;background:var(--g);color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.qty-num{font-size:36px;font-weight:900;color:var(--text);min-width:60px;text-align:center;}
-.qty-unit{font-size:13px;color:var(--sub);}
+
+/* Scroll */
+.scroll{overflow-y:auto;flex:1;padding-bottom:100px;}
+.sec-head{font-size:11px;font-weight:900;color:var(--sub);padding:14px 16px 8px;letter-spacing:.05em;text-transform:uppercase;}
+
+/* ===== カート画面 ===== */
+/* カテゴリタブ */
+.cat-tabs{display:flex;border-bottom:2px solid var(--border);background:#fff;flex-shrink:0;overflow-x:auto;}
+.cat-tab{flex-shrink:0;padding:10px 14px;font-size:12px;font-weight:700;color:var(--sub);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit;white-space:nowrap;}
+.cat-tab.active{color:var(--g);border-bottom-color:var(--g);}
+
+/* 商品行 */
+.product-section{padding:0 16px;}
+.product-group-name{font-size:12px;font-weight:900;color:var(--sub);padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;}
+.product-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #f0f0f0;}
+.product-row:last-child{border-bottom:none;}
+.product-info{flex:1;}
+.product-name{font-size:13px;font-weight:600;color:var(--text);}
+.product-spec{font-size:11px;color:var(--sub);}
+.product-price{font-size:12px;font-weight:700;color:var(--gd);}
+.qty-ctrl{display:flex;align-items:center;gap:0;flex-shrink:0;}
+.qty-btn{width:28px;height:28px;border-radius:6px;background:var(--g);color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.qty-num{width:36px;text-align:center;font-size:14px;font-weight:900;color:var(--text);}
+.qty-num.has-qty{color:var(--g);}
+
+/* カートバー */
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px;}
+.cart-summary{background:var(--gl);border-radius:8px;padding:8px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.cart-summary-label{font-size:12px;font-weight:700;color:var(--gd);}
+.cart-summary-total{font-size:16px;font-weight:900;color:var(--gd);}
+.cart-summary-count{font-size:11px;color:var(--sub);}
+.primary-btn{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;transition:opacity .15s;}
+.primary-btn:disabled{background:#ccc;cursor:not-allowed;}
+.secondary-btn{width:100%;padding:11px;background:#fff;color:var(--g);border:2px solid var(--g);border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px;}
+
+/* ===== 配送条件 ===== */
 .site-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
 .site-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);transition:all .15s;}
 .site-card.selected{border-color:var(--g);background:var(--gl);}
 .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.site-card.selected .radio{border-color:var(--g);}
+.site-card.selected .radio,.time-card.selected .radio{border-color:var(--g);}
 .rdot{width:10px;height:10px;border-radius:50%;background:var(--g);display:none;}
-.site-card.selected .rdot{display:block;}
+.site-card.selected .rdot,.time-card.selected .rdot{display:block;}
 .site-name{font-size:13px;font-weight:700;}
 .site-addr{font-size:11px;color:var(--sub);}
+
+/* 日付スクロール */
+.date-scroll{display:flex;gap:8px;padding:4px 16px 10px;overflow-x:auto;}
+.date-scroll::-webkit-scrollbar{display:none;}
+.date-chip{flex-shrink:0;width:62px;background:#fff;border:2px solid var(--border);border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:all .15s;}
+.date-chip.selected{border-color:var(--g);background:var(--gl);}
+.date-day{font-size:9px;font-weight:700;color:var(--sub);}
+.date-num{font-size:18px;font-weight:900;color:var(--text);}
+.date-week{font-size:9px;color:var(--sub);}
+.date-chip.selected .date-num,.date-chip.selected .date-day{color:var(--gd);}
+
+/* 時間帯 */
+.time-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px;}
+.time-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);transition:all .15s;}
+.time-card.selected{border-color:var(--g);background:var(--gl);}
+.time-label{font-size:13px;font-weight:700;flex:1;}
+.time-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gl);color:var(--gd);font-weight:700;}
+
+/* 荷揚げ */
 .hoist-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 8px;}
 .hoist-card{background:#fff;border:2px solid var(--border);border-radius:var(--rs);padding:14px 10px;cursor:pointer;text-align:center;box-shadow:var(--shadow);transition:all .15s;}
 .hoist-card.selected{border-color:var(--g);background:var(--gl);}
@@ -79,25 +121,32 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .hoist-price.free{color:var(--gd);}
 .hoist-price.paid{color:var(--red);}
 .hoist-note{font-size:10px;color:var(--sub);margin-top:3px;line-height:1.4;}
+
+/* ===== 確認画面 ===== */
 .conf-card{background:#fff;border-radius:var(--r);margin:0 16px 12px;padding:16px;box-shadow:var(--shadow);}
 .conf-title{font-size:11px;font-weight:900;color:var(--sub);margin-bottom:10px;letter-spacing:.04em;}
 .conf-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px;}
 .conf-row:last-child{border-bottom:none;}
-.conf-label{width:72px;flex-shrink:0;color:var(--sub);font-weight:700;}
-.conf-val{font-weight:500;}
+.conf-label{width:76px;flex-shrink:0;color:var(--sub);font-weight:700;}
+.conf-val{font-weight:500;flex:1;}
+.cart-item-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #f0f0f0;font-size:12px;}
+.cart-item-row:last-child{border-bottom:none;}
+.cart-item-name{color:var(--text);}
+.cart-item-price{font-weight:700;color:var(--gd);}
 .total-row{display:flex;justify-content:space-between;padding:10px 0 0;margin-top:6px;border-top:2px solid var(--border);}
 .total-label{font-size:13px;font-weight:700;}
 .total-val{font-size:18px;font-weight:900;color:var(--gd);}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px;display:flex;flex-direction:column;gap:8px;}
+
+/* 完了 */
 .complete-top{background:linear-gradient(135deg,var(--g),var(--gd));padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;}
 .complete-icon{font-size:56px;}
 .complete-title{font-size:20px;font-weight:900;}
 .complete-sub{font-size:12px;opacity:.85;}
 .complete-timer{background:rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;margin-top:4px;font-size:12px;font-weight:700;}
-.order-num{font-size:22px;font-weight:900;color:var(--g);text-align:center;padding:8px 0;}
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px;display:flex;flex-direction:column;gap:8px;}
-.primary-btn{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;}
-.primary-btn:disabled{background:#ccc;cursor:not-allowed;}
-.secondary-btn{width:100%;padding:11px;background:#fff;color:var(--g);border:2px solid var(--g);border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;}
+.order-num-big{font-size:24px;font-weight:900;color:var(--g);text-align:center;padding:8px 0;}
+
+/* 履歴 */
 .hist-item{background:#fff;margin:0 16px 10px;border-radius:var(--rs);padding:14px;box-shadow:var(--shadow);}
 .hist-top{display:flex;justify-content:space-between;margin-bottom:6px;}
 .hist-id{font-size:11px;color:var(--sub);font-weight:700;}
@@ -106,15 +155,16 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .s-transit{background:#dbeafe;color:#1e40af;}
 .hist-name{font-size:14px;font-weight:700;margin-bottom:2px;}
 .hist-meta{font-size:11px;color:var(--sub);}
+
+/* Toast */
 .toast{position:fixed;top:70px;left:12px;right:12px;background:#111;color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;transform:translateY(-80px);opacity:0;transition:all .3s;pointer-events:none;text-align:center;}
 .toast.show{transform:translateY(0);opacity:1;}
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
 
-<!-- HOME -->
+<!-- ===== HOME ===== -->
 <div class="screen active" id="sc-home">
   <div class="header">
     <div class="header-logo">🏗️</div>
@@ -128,7 +178,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
     <div class="home-card primary" onclick="startOrder()">
       <div class="home-card-icon">🛒</div>
       <div class="home-card-label">新規注文</div>
-      <div class="home-card-sub">2時間以内に届く</div>
+      <div class="home-card-sub">複数品目まとめて発注</div>
     </div>
     <div class="home-card" onclick="go('sc-hist')">
       <div class="home-card-icon">📋</div>
@@ -148,76 +198,72 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   </div>
 </div>
 
-<!-- STEP1: 品目 -->
-<div class="screen" id="sc-item">
+<!-- ===== STEP1: カート（複数品目） ===== -->
+<div class="screen" id="sc-cart">
   <div class="header">
     <button class="header-back" onclick="go('sc-home')">‹</button>
-    <span class="header-title">品目を選ぶ</span>
-    <span class="header-step">STEP 1/4</span>
+    <span class="header-title">商品を選ぶ</span>
+    <span class="header-step">STEP 1/3</span>
   </div>
   <div class="steps">
-    <div class="step active"><div class="step-num">1</div><div class="step-label">品目</div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-label">規格・数量</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-label">配送条件</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-label">確認</div></div>
+    <div class="step active"><div class="step-num">1</div><div class="step-label">商品選択</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-label">配送条件</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">確認・確定</div></div>
   </div>
-  <div class="scroll">
-    <div class="sec-head">📦 品目を選んでください</div>
-    <div class="item-grid" id="item-grid"></div>
-  </div>
-  <div class="bottom-bar">
-    <button class="primary-btn" id="item-next-btn" onclick="goToSpec()" disabled>次へ →</button>
-  </div>
-</div>
-
-<!-- STEP2: 規格・数量 -->
-<div class="screen" id="sc-spec">
-  <div class="header">
-    <button class="header-back" onclick="go('sc-item')">‹</button>
-    <span class="header-title" id="spec-title">規格を選ぶ</span>
-    <span class="header-step">STEP 2/4</span>
-  </div>
-  <div class="steps">
-    <div class="step done"><div class="step-num">✓</div><div class="step-label">品目</div></div>
-    <div class="step active"><div class="step-num">2</div><div class="step-label">規格・数量</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-label">配送条件</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-label">確認</div></div>
-  </div>
-  <div class="scroll">
-    <div class="sec-head">📐 規格を選んでください</div>
-    <div class="spec-list" id="spec-list"></div>
-    <div class="sec-head">🔢 数量</div>
-    <div class="qty-wrap">
-      <div class="qty-label">数量を選んでください</div>
-      <div class="qty-ctrl">
-        <button class="qty-btn" onclick="changeQty(-1)">−</button>
-        <span class="qty-num" id="qty-display">1</span>
-        <button class="qty-btn" onclick="changeQty(1)">＋</button>
+  <div class="cat-tabs" id="cat-tabs"></div>
+  <div class="scroll" id="product-area"></div>
+  <div class="cart-bar">
+    <div class="cart-summary">
+      <div>
+        <div class="cart-summary-label">🛒 選択中の商品</div>
+        <div class="cart-summary-count" id="cart-count">0品目 選択中</div>
       </div>
-      <div class="qty-unit">個 / 枚 / 本</div>
+      <div class="cart-summary-total" id="cart-total">¥0</div>
     </div>
-  </div>
-  <div class="bottom-bar">
-    <button class="primary-btn" id="spec-next-btn" onclick="goToDelivery()" disabled>次へ →</button>
+    <button class="primary-btn" id="cart-next-btn" onclick="go('sc-delivery')" disabled>配送条件を設定する →</button>
   </div>
 </div>
 
-<!-- STEP3: 配送条件 -->
+<!-- ===== STEP2: 配送条件 ===== -->
 <div class="screen" id="sc-delivery">
   <div class="header">
-    <button class="header-back" onclick="go('sc-spec')">‹</button>
+    <button class="header-back" onclick="go('sc-cart')">‹</button>
     <span class="header-title">配送条件</span>
-    <span class="header-step">STEP 3/4</span>
+    <span class="header-step">STEP 2/3</span>
   </div>
   <div class="steps">
-    <div class="step done"><div class="step-num">✓</div><div class="step-label">品目</div></div>
-    <div class="step done"><div class="step-num">✓</div><div class="step-label">規格・数量</div></div>
-    <div class="step active"><div class="step-num">3</div><div class="step-label">配送条件</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-label">確認</div></div>
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">商品選択</div></div>
+    <div class="step active"><div class="step-num">2</div><div class="step-label">配送条件</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-label">確認・確定</div></div>
   </div>
   <div class="scroll">
     <div class="sec-head">📍 配送先現場を選ぶ</div>
     <div class="site-list" id="site-list"></div>
+
+    <div class="sec-head">📅 希望配送日</div>
+    <div class="date-scroll" id="date-scroll"></div>
+
+    <div class="sec-head">🕐 希望時間帯</div>
+    <div class="time-list">
+      <div class="time-card selected" onclick="selTime(this,'午前8時〜午前10時')">
+        <div class="radio"><div class="rdot"></div></div>
+        <div class="time-label">午前8時 〜 午前10時</div>
+        <span class="time-badge">⚡ 最速</span>
+      </div>
+      <div class="time-card" onclick="selTime(this,'午前10時〜午前12時')">
+        <div class="radio"><div class="rdot"></div></div>
+        <div class="time-label">午前10時 〜 午前12時</div>
+      </div>
+      <div class="time-card" onclick="selTime(this,'午後1時〜午後3時')">
+        <div class="radio"><div class="rdot"></div></div>
+        <div class="time-label">午後1時 〜 午後3時</div>
+      </div>
+      <div class="time-card" onclick="selTime(this,'午後3時〜午後5時')">
+        <div class="radio"><div class="rdot"></div></div>
+        <div class="time-label">午後3時 〜 午後5時</div>
+      </div>
+    </div>
+
     <div class="sec-head">🏗️ 荷揚げオプション</div>
     <div class="hoist-grid">
       <div class="hoist-card selected" id="hoist-no" onclick="selHoist('no')">
@@ -233,78 +279,80 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
         <div class="hoist-note">指定フロアまで搬入</div>
       </div>
     </div>
+    <div style="height:10px;"></div>
   </div>
   <div class="bottom-bar">
-    <button class="primary-btn" id="delivery-next-btn" onclick="goToConfirm()" disabled>確認画面へ →</button>
+    <button class="primary-btn" id="delivery-next-btn" onclick="goToConfirm()" disabled>注文内容を確認する →</button>
+    <button class="secondary-btn" onclick="go('sc-cart')">← 商品選択に戻る</button>
   </div>
 </div>
 
-<!-- STEP4: 確認 -->
+<!-- ===== STEP3: 確認 ===== -->
 <div class="screen" id="sc-confirm">
   <div class="header">
     <button class="header-back" onclick="go('sc-delivery')">‹</button>
     <span class="header-title">注文内容の確認</span>
-    <span class="header-step">STEP 4/4</span>
+    <span class="header-step">STEP 3/3</span>
   </div>
   <div class="steps">
-    <div class="step done"><div class="step-num">✓</div><div class="step-label">品目</div></div>
-    <div class="step done"><div class="step-num">✓</div><div class="step-label">規格・数量</div></div>
+    <div class="step done"><div class="step-num">✓</div><div class="step-label">商品選択</div></div>
     <div class="step done"><div class="step-num">✓</div><div class="step-label">配送条件</div></div>
-    <div class="step active"><div class="step-num">4</div><div class="step-label">確認</div></div>
+    <div class="step active"><div class="step-num">3</div><div class="step-label">確認・確定</div></div>
   </div>
   <div class="scroll">
-    <div class="sec-head" style="padding-top:14px;">📋 注文内容</div>
+    <div class="sec-head" style="padding-top:14px;">📦 注文商品</div>
     <div class="conf-card">
-      <div class="conf-title">商品情報</div>
-      <div class="conf-row"><span class="conf-label">品目</span><span class="conf-val" id="conf-item"></span></div>
-      <div class="conf-row"><span class="conf-label">規格</span><span class="conf-val" id="conf-spec"></span></div>
-      <div class="conf-row"><span class="conf-label">数量</span><span class="conf-val" id="conf-qty"></span></div>
+      <div id="conf-items-list"></div>
+      <div class="total-row">
+        <span class="total-label">商品合計</span>
+        <span class="total-val" id="conf-subtotal"></span>
+      </div>
     </div>
+    <div class="sec-head">📍 配送情報</div>
     <div class="conf-card">
-      <div class="conf-title">配送情報</div>
       <div class="conf-row"><span class="conf-label">現場</span><span class="conf-val" id="conf-site"></span></div>
+      <div class="conf-row"><span class="conf-label">希望日</span><span class="conf-val" id="conf-date"></span></div>
+      <div class="conf-row"><span class="conf-label">時間帯</span><span class="conf-val" id="conf-time"></span></div>
       <div class="conf-row"><span class="conf-label">荷揚げ</span><span class="conf-val" id="conf-hoist"></span></div>
     </div>
+    <div class="sec-head">💴 金額</div>
     <div class="conf-card">
-      <div class="conf-title">金額</div>
-      <div class="conf-row"><span class="conf-label">商品代金</span><span class="conf-val" id="conf-subtotal"></span></div>
+      <div class="conf-row"><span class="conf-label">商品代金</span><span class="conf-val" id="conf-subtotal2"></span></div>
       <div class="conf-row" id="conf-hoist-row" style="display:none"><span class="conf-label">荷揚げ料</span><span class="conf-val" style="color:var(--red)">¥8,000</span></div>
       <div class="total-row"><span class="total-label">合計（税込）</span><span class="total-val" id="conf-total"></span></div>
     </div>
   </div>
   <div class="bottom-bar">
     <button class="primary-btn" onclick="submitOrder()">✅ 注文を確定する</button>
-    <button class="secondary-btn" onclick="go('sc-item')">🔄 最初からやり直す</button>
+    <button class="secondary-btn" onclick="go('sc-cart')">🔄 最初からやり直す</button>
   </div>
 </div>
 
-<!-- COMPLETE -->
+<!-- ===== COMPLETE ===== -->
 <div class="screen" id="sc-complete">
   <div class="complete-top">
     <div class="complete-icon">✅</div>
     <div class="complete-title">注文が確定しました</div>
     <div class="complete-sub">担当者が手配を開始します</div>
-    <div class="complete-timer">⏱ 約2時間後に現場到着予定</div>
+    <div class="complete-timer" id="complete-timer">⏱ 本日配送予定</div>
   </div>
-  <div style="padding:14px;">
+  <div style="padding:14px 14px 80px;">
     <div class="conf-card">
       <div class="conf-title">📋 注文番号</div>
-      <div class="order-num" id="order-num">#ORD-0001</div>
+      <div class="order-num-big" id="order-num"></div>
     </div>
     <div class="conf-card">
       <div class="conf-title">📍 配送サマリ</div>
-      <div class="conf-row"><span class="conf-label">品目</span><span class="conf-val" id="done-item"></span></div>
-      <div class="conf-row"><span class="conf-label">数量</span><span class="conf-val" id="done-qty"></span></div>
       <div class="conf-row"><span class="conf-label">現場</span><span class="conf-val" id="done-site"></span></div>
+      <div class="conf-row"><span class="conf-label">希望日時</span><span class="conf-val" id="done-datetime"></span></div>
+      <div class="conf-row"><span class="conf-label">品目数</span><span class="conf-val" id="done-items"></span></div>
       <div class="conf-row"><span class="conf-label">合計</span><span class="conf-val" id="done-total" style="font-weight:900;color:var(--gd);"></span></div>
     </div>
-  </div>
-  <div style="padding:0 16px 80px;">
     <button class="primary-btn" onclick="go('sc-home')">ホームに戻る</button>
   </div>
 </div>
 
-<!-- HISTORY -->
+<!-- ===== HISTORY ===== -->
 <div class="screen" id="sc-hist">
   <div class="header">
     <button class="header-back" onclick="go('sc-home')">‹</button>
@@ -313,13 +361,13 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   <div class="scroll" style="padding:12px 0;">
     <div class="hist-item">
       <div class="hist-top"><span class="hist-id">#ORD-0047 · 3/17</span><span class="hist-status s-done">✅ 納品済</span></div>
-      <div class="hist-name">石膏ボード 12.5mm ×10枚</div>
-      <div class="hist-meta">世田谷区 リフォームA / ¥6,800</div>
+      <div class="hist-name">石膏ボード12.5mm×10、タルキ×5</div>
+      <div class="hist-meta">世田谷区 リフォームA / ¥9,050 / 午前配送</div>
     </div>
     <div class="hist-item">
       <div class="hist-top"><span class="hist-id">#ORD-0043 · 本日</span><span class="hist-status s-transit">🚛 配送中</span></div>
-      <div class="hist-name">ラワンベニヤ 3m ×4枚</div>
-      <div class="hist-meta">調布市 リフォームA / ¥7,200</div>
+      <div class="hist-name">ラワンベニヤ3m×4、針葉樹合板×6</div>
+      <div class="hist-meta">調布市 リフォームA / ¥19,800 / 午後配送</div>
     </div>
   </div>
 </div>
@@ -327,168 +375,306 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 <script>
 var GAS_URL = "https://script.google.com/macros/s/AKfycbxe53diEDn1xDxrWkK9QQYKeKJddRuXtGTMuLCS35ZCTVqSmKV9qLuQRbPUVDf-9bvVxQ/exec";
 
-var ITEMS = [
-  {name:"石膏ボード",icon:"🧱",specs:[{name:"9.5mm 3×6",price:500},{name:"12.5mm 3×6",price:680},{name:"15mm 3×6",price:820}]},
-  {name:"ラワンベニヤ",icon:"🪵",specs:[{name:"3m 3×6",price:1800},{name:"12m 3×6",price:2400},{name:"24m 3×6",price:3800}]},
-  {name:"針葉樹合板",icon:"🌲",specs:[{name:"9m 3×6",price:1600},{name:"12m 3×6",price:2100},{name:"24m 3×6",price:2900}]},
-  {name:"タルキ 赤松",icon:"📏",specs:[{name:"45×45 4m",price:450},{name:"45×60 4m",price:580}]},
-  {name:"杉 構造材",icon:"🏗️",specs:[{name:"105×105mm 3m",price:3200},{name:"90×90mm 3m",price:2800}]}
+// ===== 商品データ =====
+var CATEGORIES = [
+  { name:"副資材", items:[
+    { group:"石膏ボード", products:[
+      { name:"石膏ボード 9.5mm 3×6",   price:500  },
+      { name:"石膏ボード 12.5mm 3×6",  price:680  },
+      { name:"強化石膏ボード 15mm 3×6", price:820  }
+    ]},
+    { group:"ラワンベニヤ", products:[
+      { name:"ラワンベニヤ 3m 3×6",    price:1800 },
+      { name:"ラワンベニヤ 12m 3×6",   price:2400 },
+      { name:"ラワンベニヤ 24m 3×6",   price:3800 }
+    ]},
+    { group:"針葉樹合板", products:[
+      { name:"針葉樹合板 9m 3×6",      price:1600 },
+      { name:"針葉樹合板 12m 3×6",     price:2100 },
+      { name:"針葉樹合板 24m 3×6",     price:2900 }
+    ]}
+  ]},
+  { name:"木材", items:[
+    { group:"タルキ・垂木", products:[
+      { name:"タルキ 赤松 45×45 4m",   price:450  },
+      { name:"タルキ 赤松 45×60 4m",   price:580  }
+    ]},
+    { group:"杉・桧", products:[
+      { name:"杉 105×105mm 3m",        price:3200 },
+      { name:"杉 90×90mm 3m",          price:2800 },
+      { name:"桧 90×90mm 3m 無節",     price:5800 },
+      { name:"集成材 E120 120×240 4m", price:8500 }
+    ]}
+  ]}
 ];
 
 var SITES = [
-  {name:"世田谷区 リフォームA",addr:"世田谷区若林3-12-8"},
-  {name:"世田谷区 リフォームB",addr:"世田谷区下馬1-8-3"},
-  {name:"調布市 リフォームA",addr:"調布市布田4-1-5"},
-  {name:"調布市 リフォームB",addr:"調布市国領町2-5-6"},
-  {name:"その他",addr:"担当者に確認"}
+  { name:"世田谷区 リフォームA", addr:"世田谷区若林3-12-8"  },
+  { name:"世田谷区 リフォームB", addr:"世田谷区下馬1-8-3"   },
+  { name:"調布市 リフォームA",   addr:"調布市布田4-1-5"     },
+  { name:"調布市 リフォームB",   addr:"調布市国領町2-5-6"   },
+  { name:"その他",               addr:"担当者に確認"         }
 ];
 
-var order = {item:null,itemName:"",itemIcon:"",spec:null,specName:"",specPrice:0,qty:1,site:null,siteName:"",hoist:"no"};
+// ===== 状態管理 =====
+var cart     = {};  // key: 商品名, value: { price, qty }
+var delivery = { site:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
 
-// 起動時にすぐホームを表示
+// ===== 起動 =====
 window.addEventListener('load', function() {
   go('sc-home');
-  buildItemGrid();
+  buildDateScroll();
   buildSiteList();
 });
 
+// ===== 画面遷移 =====
 function go(id) {
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
+// ===== 注文開始 =====
 function startOrder() {
-  order = {item:null,itemName:"",itemIcon:"",spec:null,specName:"",specPrice:0,qty:1,site:null,siteName:"",hoist:"no"};
-  document.getElementById('item-next-btn').disabled = true;
-  document.getElementById('spec-next-btn').disabled = true;
-  document.getElementById('delivery-next-btn').disabled = true;
-  document.querySelectorAll('.item-card').forEach(function(c){c.classList.remove('selected');});
-  document.getElementById('qty-display').textContent = '1';
+  cart = {};
+  delivery = { site:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
+  buildCatTabs();
+  showCategory(0);
+  updateCartBar();
+  // 時間帯リセット
+  document.querySelectorAll('.time-card').forEach(function(c,i){ c.classList.toggle('selected', i===0); });
   document.getElementById('hoist-no').classList.add('selected');
   document.getElementById('hoist-yes').classList.remove('selected');
-  go('sc-item');
+  // 現場リセット
+  document.querySelectorAll('.site-card').forEach(function(c){ c.classList.remove('selected'); });
+  document.getElementById('delivery-next-btn').disabled = true;
+  go('sc-cart');
 }
 
-function buildItemGrid() {
-  var grid = document.getElementById('item-grid');
-  grid.innerHTML = '';
-  ITEMS.forEach(function(item,i) {
-    var card = document.createElement('div');
-    card.className = 'item-card';
-    card.innerHTML = '<div class="item-icon">'+item.icon+'</div><div class="item-name">'+item.name+'</div>';
-    card.onclick = function() {
-      document.querySelectorAll('.item-card').forEach(function(c){c.classList.remove('selected');});
-      card.classList.add('selected');
-      order.item = i; order.itemName = item.name; order.itemIcon = item.icon;
-      document.getElementById('item-next-btn').disabled = false;
+// ===== カテゴリタブ =====
+function buildCatTabs() {
+  var tabs = document.getElementById('cat-tabs');
+  tabs.innerHTML = '';
+  CATEGORIES.forEach(function(cat, i) {
+    var btn = document.createElement('button');
+    btn.className = 'cat-tab' + (i===0?' active':'');
+    btn.textContent = cat.name;
+    btn.onclick = function() {
+      document.querySelectorAll('.cat-tab').forEach(function(t){ t.classList.remove('active'); });
+      btn.classList.add('active');
+      showCategory(i);
     };
-    grid.appendChild(card);
+    tabs.appendChild(btn);
   });
 }
 
-function goToSpec() {
-  var item = ITEMS[order.item];
-  document.getElementById('spec-title').textContent = item.name+'の規格';
-  var list = document.getElementById('spec-list');
-  list.innerHTML = '';
-  order.spec=null; order.specName=''; order.specPrice=0;
-  document.getElementById('spec-next-btn').disabled = true;
-  item.specs.forEach(function(spec,i) {
-    var card = document.createElement('div');
-    card.className = 'spec-card';
-    card.innerHTML = '<span class="spec-name">'+spec.name+'</span><span class="spec-price">¥'+spec.price.toLocaleString()+'/枚</span>';
-    card.onclick = function() {
-      document.querySelectorAll('.spec-card').forEach(function(c){c.classList.remove('selected');});
-      card.classList.add('selected');
-      order.spec=i; order.specName=spec.name; order.specPrice=spec.price;
-      document.getElementById('spec-next-btn').disabled = false;
-    };
-    list.appendChild(card);
+// ===== 商品リスト表示 =====
+function showCategory(idx) {
+  var area = document.getElementById('product-area');
+  area.innerHTML = '';
+  var cat = CATEGORIES[idx];
+  cat.items.forEach(function(group) {
+    var section = document.createElement('div');
+    section.className = 'product-section';
+    var groupName = document.createElement('div');
+    groupName.className = 'product-group-name';
+    groupName.textContent = group.group;
+    section.appendChild(groupName);
+    group.products.forEach(function(product) {
+      var row = document.createElement('div');
+      row.className = 'product-row';
+      var qty = cart[product.name] ? cart[product.name].qty : 0;
+      row.innerHTML =
+        '<div class="product-info">'
+        + '<div class="product-name">'+product.name+'</div>'
+        + '<div class="product-price">¥'+product.price.toLocaleString()+'/枚・本</div>'
+        + '</div>'
+        + '<div class="qty-ctrl">'
+        + '<button class="qty-btn" onclick="changeCartQty(\''+product.name+'\','+product.price+',-1,this)">−</button>'
+        + '<span class="qty-num'+(qty>0?' has-qty':'')+'" id="qty-'+encodeKey(product.name)+'">'+qty+'</span>'
+        + '<button class="qty-btn" onclick="changeCartQty(\''+product.name+'\','+product.price+',1,this)">＋</button>'
+        + '</div>';
+      section.appendChild(row);
+    });
+    area.appendChild(section);
   });
-  order.qty=1; document.getElementById('qty-display').textContent='1';
-  go('sc-spec');
 }
 
-function changeQty(d) {
-  order.qty = Math.max(1, order.qty+d);
-  document.getElementById('qty-display').textContent = order.qty;
+function encodeKey(name) {
+  return name.replace(/\s/g,'_').replace(/[^a-zA-Z0-9_\u3040-\u9FFF]/g,'');
 }
 
-function goToDelivery() { go('sc-delivery'); }
+// ===== カート操作 =====
+function changeCartQty(name, price, delta, btn) {
+  if (!cart[name]) cart[name] = { price:price, qty:0 };
+  cart[name].qty = Math.max(0, cart[name].qty + delta);
+  if (cart[name].qty === 0) delete cart[name];
+  // 数量表示更新
+  var numEl = btn.parentElement.querySelector('.qty-num');
+  var qty = cart[name] ? cart[name].qty : 0;
+  numEl.textContent = qty;
+  numEl.className = 'qty-num' + (qty > 0 ? ' has-qty' : '');
+  updateCartBar();
+}
 
+function updateCartBar() {
+  var total = 0;
+  var count = 0;
+  Object.keys(cart).forEach(function(name) {
+    total += cart[name].price * cart[name].qty;
+    count += cart[name].qty;
+  });
+  document.getElementById('cart-total').textContent = '¥' + total.toLocaleString();
+  var itemCount = Object.keys(cart).length;
+  document.getElementById('cart-count').textContent = itemCount + '品目 / 計' + count + '個 選択中';
+  document.getElementById('cart-next-btn').disabled = itemCount === 0;
+}
+
+// ===== 日付スクロール =====
+function buildDateScroll() {
+  var scroll = document.getElementById('date-scroll');
+  scroll.innerHTML = '';
+  var days  = ['日','月','火','水','木','金','土'];
+  var today = new Date();
+  for (var i = 1; i <= 7; i++) {
+    var d = new Date(today);
+    d.setDate(today.getDate() + i);
+    var month  = d.getMonth() + 1;
+    var date   = d.getDate();
+    var week   = days[d.getDay()];
+    var label  = i === 1 ? '明日' : i === 2 ? '明後日' : '';
+    var dateStr = month + '/' + date + '(' + week + ')';
+    var chip = document.createElement('div');
+    chip.className = 'date-chip' + (i === 1 ? ' selected' : '');
+    chip.dataset.date = dateStr;
+    chip.innerHTML =
+      '<div class="date-day">' + label + '</div>'
+      + '<div class="date-num">' + date + '</div>'
+      + '<div class="date-week">' + week + '</div>';
+    chip.onclick = function() {
+      document.querySelectorAll('.date-chip').forEach(function(c){ c.classList.remove('selected'); });
+      this.classList.add('selected');
+      delivery.date = this.dataset.date;
+    };
+    scroll.appendChild(chip);
+    if (i === 1) delivery.date = dateStr;
+  }
+}
+
+// ===== 現場リスト =====
 function buildSiteList() {
   var list = document.getElementById('site-list');
   list.innerHTML = '';
-  SITES.forEach(function(site,i) {
+  SITES.forEach(function(site) {
     var card = document.createElement('div');
     card.className = 'site-card';
-    card.innerHTML = '<div class="radio"><div class="rdot"></div></div><div><div class="site-name">'+site.name+'</div><div class="site-addr">'+site.addr+'</div></div>';
+    card.innerHTML =
+      '<div class="radio"><div class="rdot"></div></div>'
+      + '<div><div class="site-name">'+site.name+'</div><div class="site-addr">'+site.addr+'</div></div>';
     card.onclick = function() {
-      document.querySelectorAll('.site-card').forEach(function(c){c.classList.remove('selected');});
+      document.querySelectorAll('.site-card').forEach(function(c){ c.classList.remove('selected'); });
       card.classList.add('selected');
-      order.site=i; order.siteName=site.name;
+      delivery.site = site.name;
       document.getElementById('delivery-next-btn').disabled = false;
     };
     list.appendChild(card);
   });
 }
 
+// ===== 時間帯・荷揚げ =====
+function selTime(el, time) {
+  document.querySelectorAll('.time-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  delivery.time = time;
+}
+
 function selHoist(type) {
-  order.hoist = type;
+  delivery.hoist = type;
   document.getElementById('hoist-no').classList.toggle('selected', type==='no');
   document.getElementById('hoist-yes').classList.toggle('selected', type==='yes');
 }
 
+// ===== 確認画面 =====
 function goToConfirm() {
-  var subtotal = order.specPrice * order.qty;
-  var hoistFee = order.hoist==='yes' ? 8000 : 0;
-  var total = subtotal + hoistFee;
-  document.getElementById('conf-item').textContent = order.itemIcon+' '+order.itemName;
-  document.getElementById('conf-spec').textContent = order.specName;
-  document.getElementById('conf-qty').textContent = order.qty+' 個';
-  document.getElementById('conf-site').textContent = order.siteName;
-  document.getElementById('conf-hoist').textContent = order.hoist==='yes'?'🏗️ あり（＋¥8,000）':'なし（車上渡し）';
-  document.getElementById('conf-subtotal').textContent = '¥'+subtotal.toLocaleString();
-  document.getElementById('conf-total').textContent = '¥'+total.toLocaleString();
-  document.getElementById('conf-hoist-row').style.display = order.hoist==='yes'?'flex':'none';
+  var subtotal = 0;
+  var itemsHtml = '';
+  Object.keys(cart).forEach(function(name) {
+    var item  = cart[name];
+    var price = item.price * item.qty;
+    subtotal += price;
+    itemsHtml +=
+      '<div class="cart-item-row">'
+      + '<span class="cart-item-name">'+name+' ×'+item.qty+'</span>'
+      + '<span class="cart-item-price">¥'+price.toLocaleString()+'</span>'
+      + '</div>';
+  });
+  var hoistFee = delivery.hoist === 'yes' ? 8000 : 0;
+  var total    = subtotal + hoistFee;
+
+  document.getElementById('conf-items-list').innerHTML   = itemsHtml;
+  document.getElementById('conf-subtotal').textContent   = '¥' + subtotal.toLocaleString();
+  document.getElementById('conf-subtotal2').textContent  = '¥' + subtotal.toLocaleString();
+  document.getElementById('conf-total').textContent      = '¥' + total.toLocaleString();
+  document.getElementById('conf-site').textContent       = delivery.site;
+  document.getElementById('conf-date').textContent       = delivery.date;
+  document.getElementById('conf-time').textContent       = delivery.time;
+  document.getElementById('conf-hoist').textContent      = delivery.hoist==='yes'?'🏗️ あり（＋¥8,000）':'なし（車上渡し）';
+  document.getElementById('conf-hoist-row').style.display = delivery.hoist==='yes'?'flex':'none';
   go('sc-confirm');
 }
 
+// ===== 注文確定 =====
 function submitOrder() {
-  var subtotal = order.specPrice * order.qty;
-  var hoistFee = order.hoist==='yes' ? 8000 : 0;
-  var total = subtotal + hoistFee;
-  var orderNum = '#ORD-'+String(Math.floor(Math.random()*9000)+1000);
+  var subtotal = 0;
+  var itemLines = [];
+  Object.keys(cart).forEach(function(name) {
+    var item = cart[name];
+    subtotal += item.price * item.qty;
+    itemLines.push(name + ' ×' + item.qty + '（¥' + (item.price * item.qty).toLocaleString() + '）');
+  });
+  var hoistFee  = delivery.hoist === 'yes' ? 8000 : 0;
+  var total     = subtotal + hoistFee;
+  var orderNum  = '#ORD-' + String(Math.floor(Math.random() * 9000) + 1000);
   var timestamp = new Date().toLocaleString('ja-JP');
+  var itemCount = Object.keys(cart).length;
 
   var payload = {
-    timestamp:timestamp, orderNum:orderNum,
-    item:order.itemName, spec:order.specName, qty:order.qty,
-    site:order.siteName, hoist:order.hoist==='yes'?'あり（＋¥8,000）':'なし',
-    subtotal:subtotal, hoistFee:hoistFee, total:total
+    timestamp: timestamp,
+    orderNum:  orderNum,
+    items:     itemLines.join('\n'),
+    itemCount: itemCount,
+    site:      delivery.site,
+    date:      delivery.date,
+    time:      delivery.time,
+    hoist:     delivery.hoist === 'yes' ? 'あり（＋¥8,000）' : 'なし',
+    subtotal:  subtotal,
+    hoistFee:  hoistFee,
+    total:     total
   };
 
   fetch(GAS_URL, {
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   }).catch(function(){});
 
-  document.getElementById('order-num').textContent = orderNum;
-  document.getElementById('done-item').textContent = order.itemName+' '+order.specName;
-  document.getElementById('done-qty').textContent = order.qty+' 個';
-  document.getElementById('done-site').textContent = order.siteName;
-  document.getElementById('done-total').textContent = '¥'+total.toLocaleString();
+  // 完了画面
+  document.getElementById('order-num').textContent     = orderNum;
+  document.getElementById('done-site').textContent     = delivery.site;
+  document.getElementById('done-datetime').textContent = delivery.date + ' ' + delivery.time;
+  document.getElementById('done-items').textContent    = itemCount + '品目';
+  document.getElementById('done-total').textContent    = '¥' + total.toLocaleString();
+  document.getElementById('complete-timer').textContent = '⏱ ' + delivery.date + ' ' + delivery.time + ' 到着予定';
   go('sc-complete');
 }
 
+// ===== Toast =====
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');}, 2200);
+  setTimeout(function(){ t.classList.remove('show'); }, 2200);
 }
 </script>
 </body>
