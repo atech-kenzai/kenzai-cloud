@@ -178,6 +178,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .site-stat-label{font-size:10px;color:var(--sub);margin-top:2px;font-weight:700;}
 .site-stat-sub{font-size:10px;color:var(--sub);margin-top:1px;}
 .site-stats-loading{text-align:center;padding:16px;color:var(--sub);font-size:13px;}
+/* 会社選択 */
+.company-screen{background:linear-gradient(160deg,#06C755,#04a840);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:16px;}
+.company-logo{font-size:52px;}
+.company-app-name{font-size:22px;font-weight:900;color:#fff;}
+.company-sub{font-size:13px;color:rgba(255,255,255,.8);text-align:center;}
+.company-form{background:#fff;border-radius:var(--r);padding:20px;width:100%;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+.company-form-title{font-size:14px;font-weight:900;color:var(--text);margin-bottom:14px;text-align:center;}
+.company-select-wrap{position:relative;margin-bottom:14px;}
+.company-select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:inherit;color:var(--text);background:#fafafa;outline:none;appearance:none;}
+.company-select:focus{border-color:var(--g);}
+.company-btn{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;}
+.company-note{font-size:11px;color:var(--sub);text-align:center;margin-top:10px;}
+.price-tag{font-size:11px;font-weight:700;color:var(--sub);background:var(--gl);padding:2px 6px;border-radius:4px;margin-left:4px;}
+.price-tag.custom{color:#1e40af;background:#dbeafe;}
 .toast{position:fixed;top:70px;left:12px;right:12px;background:#111;color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;transform:translateY(-80px);opacity:0;transition:all .3s;pointer-events:none;text-align:center;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.success{background:var(--gd);}
@@ -191,15 +205,35 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- ===== 会社選択（初回のみ） ===== -->
+<div class="screen active" id="sc-company">
+  <div class="company-screen">
+    <div class="company-logo">🏗️</div>
+    <div class="company-app-name">kenzaiクラウド</div>
+    <div class="company-sub">資材発注プラットフォーム<br>初回設定を行ってください</div>
+    <div class="company-form">
+      <div class="company-form-title">🏢 会社・工務店を選択</div>
+      <div class="company-select-wrap">
+        <select class="company-select" id="company-select">
+          <option value="">-- 会社名を選択してください --</option>
+        </select>
+      </div>
+      <button class="company-btn" onclick="selectCompany()">決定 →</button>
+      <div class="company-note">※ 次回からは自動でログインされます</div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== HOME ===== -->
-<div class="screen active" id="sc-home">
+<div class="screen" id="sc-home">
   <div class="header">
     <div class="header-logo">🏗️</div>
     <span class="header-title">kenzaiクラウド</span>
   </div>
   <div class="home-top">
     <div class="home-greeting">こんにちは</div>
-    <div class="home-name">さん</div>
+    <div class="home-name" id="home-company-name">さん</div>
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;margin-top:8px;font-size:12px;font-weight:700;cursor:pointer;" onclick="changeCompany()">🏢 <span id="home-company-label">会社未設定</span> ›</div>
   </div>
   <div class="home-grid">
     <div class="home-card primary" onclick="startOrder()">
@@ -565,14 +599,96 @@ var cart     = {};
 var delivery = { site:"", address:"", contact:"", phone:"", siteTime:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
 var sites    = []; // スプシから取得した現場リスト
 
+// ===== 会社・価格管理 =====
+var currentCompany = localStorage.getItem('kenzai_company') || '';
+var companyPrices  = {};
+var companyList    = [];
+
 // ===== 起動 =====
 window.addEventListener('load', function() {
-  go('sc-home');
   buildCatTabs();
   buildDateScroll();
+  loadCompanyList();
+});
+
+function loadCompanyList() {
+  fetch(GAS_URL + '?action=getCompanyList')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        companyList = data.companies || [];
+        var sel = document.getElementById('company-select');
+        sel.innerHTML = '<option value="">-- 会社名を選択してください --</option>';
+        companyList.forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = c; opt.textContent = c;
+          if (c === currentCompany) opt.selected = true;
+          sel.appendChild(opt);
+        });
+      }
+      // 会社が設定済みなら直接ホームへ
+      if (currentCompany) {
+        loadCompanyPrices(currentCompany, function() {
+          initHome();
+        });
+      } else {
+        go('sc-company');
+      }
+    })
+    .catch(function() {
+      // オフライン時は保存済み会社でホームへ
+      if (currentCompany) {
+        initHome();
+      } else {
+        go('sc-company');
+      }
+    });
+}
+
+function selectCompany() {
+  var sel = document.getElementById('company-select');
+  var company = sel.value;
+  if (!company) { showToast('会社名を選択してください'); return; }
+  currentCompany = company;
+  localStorage.setItem('kenzai_company', company);
+  loadCompanyPrices(company, function() {
+    initHome();
+  });
+}
+
+function changeCompany() {
+  go('sc-company');
+}
+
+function loadCompanyPrices(company, callback) {
+  fetch(GAS_URL + '?action=getPrices&company=' + encodeURIComponent(company))
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        companyPrices = data.prices || {};
+      }
+      if (callback) callback();
+    })
+    .catch(function() {
+      if (callback) callback();
+    });
+}
+
+function initHome() {
+  document.getElementById('home-company-name').textContent = currentCompany + ' さん';
+  document.getElementById('home-company-label').textContent = currentCompany;
+  go('sc-home');
   loadSites();
   loadMonthlySummary();
-});
+}
+
+// 価格を取得（会社別価格がなければデフォルト価格）
+function getPrice(productName, defaultPrice) {
+  if (companyPrices[productName] !== undefined) {
+    return companyPrices[productName];
+  }
+  return defaultPrice;
+}
 
 // ===== 今月のサマリをGASから取得 =====
 function loadMonthlySummary() {
@@ -985,6 +1101,7 @@ function submitOrder() {
     action:      'order',
     timestamp:   timestamp,
     orderNum:    orderNum,
+    company:     currentCompany,
     items:       itemsArray,
     site:        delivery.site,
     siteAddress: delivery.address,
