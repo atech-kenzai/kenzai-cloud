@@ -48,7 +48,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .cat-tab{flex-shrink:0;padding:10px 14px;font-size:12px;font-weight:700;color:var(--sub);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit;white-space:nowrap;}
 .cat-tab.active{color:var(--g);border-bottom-color:var(--g);}
 .product-section{padding:0 16px;}
-.product-group-name{font-size:12px;font-weight:900;color:var(--sub);padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.product-group-name{font-size:12px;font-weight:900;color:var(--sub);padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;letter-spacing:.04em;}
 .product-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #f0f0f0;}
 .product-row:last-child{border-bottom:none;}
 .product-info{flex:1;}
@@ -66,13 +66,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .primary-btn{width:100%;padding:14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;}
 .primary-btn:disabled{background:#ccc;cursor:not-allowed;}
 .secondary-btn{width:100%;padding:11px;background:#fff;color:var(--g);border:2px solid var(--g);border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px;}
-.danger-btn{width:100%;padding:11px;background:#fee2e2;color:var(--red);border:2px solid var(--red);border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px;}
 .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px;display:flex;flex-direction:column;gap:8px;}
 
 /* 現場カード */
-.site-card{background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:14px;margin:0 16px 10px;box-shadow:var(--shadow);}
+.site-card{background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:14px;margin:0 16px 10px;cursor:pointer;box-shadow:var(--shadow);transition:all .15s;}
 .site-card.selected{border-color:var(--g);background:var(--gl);}
-.site-card.selectable{cursor:pointer;}
 .site-card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
 .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
 .site-card.selected .radio{border-color:var(--g);}
@@ -82,15 +80,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .site-addr{font-size:11px;color:var(--sub);margin-top:2px;}
 .site-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);}
 .site-meta-item{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:3px;}
-.site-actions{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
-.site-action-btn{flex:1;padding:8px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;text-align:center;}
-.site-edit-btn{background:var(--gl);color:var(--gd);}
-.site-delete-btn{background:#fee2e2;color:var(--red);}
 .site-add-btn{background:var(--gl);border:2px dashed var(--g);border-radius:var(--r);padding:16px;margin:0 16px 10px;text-align:center;cursor:pointer;color:var(--gd);font-size:13px;font-weight:700;}
 
 /* 担当者編集 */
 .contact-edit-card{background:#fff;border-radius:var(--r);margin:0 16px 12px;padding:16px;box-shadow:var(--shadow);border:1.5px solid var(--gl);}
-.contact-edit-title{font-size:11px;font-weight:900;color:var(--gd);margin-bottom:12px;}
+.contact-edit-title{font-size:11px;font-weight:900;color:var(--gd);margin-bottom:12px;letter-spacing:.04em;}
 
 /* フォーム */
 .form-group{margin-bottom:12px;}
@@ -105,7 +99,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 /* 日付 */
 .date-scroll{display:flex;gap:8px;padding:4px 16px 10px;overflow-x:auto;}
 .date-scroll::-webkit-scrollbar{display:none;}
-.date-chip{flex-shrink:0;width:62px;background:#fff;border:2px solid var(--border);border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;box-shadow:var(--shadow);}
+.date-chip{flex-shrink:0;width:62px;background:#fff;border:2px solid var(--border);border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:all .15s;}
 .date-chip.selected{border-color:var(--g);background:var(--gl);}
 .date-day{font-size:9px;font-weight:700;color:var(--sub);}
 .date-num{font-size:18px;font-weight:900;color:var(--text);}
@@ -125,8 +119,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .hoist-price.free{color:var(--gd);}
 .hoist-price.paid{color:var(--red);}
 .hoist-note{font-size:10px;color:var(--sub);margin-top:3px;line-height:1.4;}
+
+/* 確認 */
 .conf-card{background:#fff;border-radius:var(--r);margin:0 16px 12px;padding:16px;box-shadow:var(--shadow);}
-.conf-title{font-size:11px;font-weight:900;color:var(--sub);margin-bottom:10px;}
+.conf-title{font-size:11px;font-weight:900;color:var(--sub);margin-bottom:10px;letter-spacing:.04em;}
 .conf-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px;}
 .conf-row:last-child{border-bottom:none;}
 .conf-label{width:76px;flex-shrink:0;color:var(--sub);font-weight:700;}
@@ -136,13 +132,19 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .total-row{display:flex;justify-content:space-between;padding:10px 0 0;margin-top:6px;border-top:2px solid var(--border);}
 .total-label{font-size:13px;font-weight:700;}
 .total-val{font-size:18px;font-weight:900;color:var(--gd);}
+
+/* 完了 */
 .complete-top{background:linear-gradient(135deg,var(--g),var(--gd));padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;}
 .complete-icon{font-size:56px;}
 .complete-title{font-size:20px;font-weight:900;}
 .complete-sub{font-size:12px;opacity:.85;}
 .complete-timer{background:rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;margin-top:4px;font-size:12px;font-weight:700;}
 .order-num-big{font-size:24px;font-weight:900;color:var(--g);text-align:center;padding:8px 0;}
+
+/* 現場登録 */
 .site-count-bar{background:var(--gl);border-radius:8px;padding:8px 14px;margin:10px 16px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--gd);}
+
+/* 履歴 */
 .hist-item{background:#fff;margin:0 16px 10px;border-radius:var(--rs);padding:14px;box-shadow:var(--shadow);}
 .hist-top{display:flex;justify-content:space-between;margin-bottom:6px;}
 .hist-id{font-size:11px;color:var(--sub);font-weight:700;}
@@ -152,19 +154,30 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .hist-name{font-size:14px;font-weight:700;margin-bottom:2px;}
 .hist-meta{font-size:11px;color:var(--sub);}
 
-/* 削除確認モーダル */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:9998;}
-.modal-overlay.show{display:flex;}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px;width:100%;max-width:480px;}
-.modal-title{font-size:16px;font-weight:900;margin-bottom:8px;text-align:center;}
-.modal-sub{font-size:13px;color:var(--sub);text-align:center;margin-bottom:20px;}
-.modal-btn-danger{width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;margin-bottom:8px;}
-.modal-btn-cancel{width:100%;padding:12px;background:var(--bg);color:var(--sub);border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
-
-.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;}
+/* Loading overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;display:none;}
 .loading-overlay.show{display:flex;}
 .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+.monthly-card{background:linear-gradient(135deg,#1a1d2e,#2d3250);border-radius:var(--r);margin:0 14px 14px;padding:16px;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+.monthly-title{font-size:11px;font-weight:900;opacity:.7;letter-spacing:.06em;margin-bottom:10px;}
+.monthly-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.monthly-stat{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;}
+.monthly-num{font-size:20px;font-weight:900;color:#fff;font-family:monospace;}
+.monthly-num.green{color:#2ecc8a;}
+.monthly-label{font-size:10px;opacity:.7;margin-top:2px;font-weight:700;}
+.monthly-loading{text-align:center;padding:8px;font-size:12px;opacity:.6;}
+.site-stats-card{background:var(--white);border-radius:var(--r);margin:0 16px 10px;padding:14px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.site-stats-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.site-stats-name{font-size:14px;font-weight:700;color:var(--text);}
+.site-stats-addr{font-size:11px;color:var(--sub);margin-top:2px;}
+.site-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:10px;border-top:1px solid var(--border);}
+.site-stat-item{text-align:center;}
+.site-stat-num{font-size:16px;font-weight:900;color:var(--gd);}
+.site-stat-label{font-size:10px;color:var(--sub);margin-top:2px;font-weight:700;}
+.site-stat-sub{font-size:10px;color:var(--sub);margin-top:1px;}
+.site-stats-loading{text-align:center;padding:16px;color:var(--sub);font-size:13px;}
 .toast{position:fixed;top:70px;left:12px;right:12px;background:#111;color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;transform:translateY(-80px);opacity:0;transition:all .3s;pointer-events:none;text-align:center;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.success{background:var(--gd);}
@@ -177,16 +190,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   <div style="font-size:13px;font-weight:700;color:var(--sub);">処理中...</div>
 </div>
 <div class="toast" id="toast"></div>
-
-<!-- 削除確認モーダル -->
-<div class="modal-overlay" id="delete-modal">
-  <div class="modal">
-    <div class="modal-title">🗑️ 現場を削除しますか？</div>
-    <div class="modal-sub" id="delete-modal-name"></div>
-    <button class="modal-btn-danger" onclick="confirmDelete()">削除する</button>
-    <button class="modal-btn-cancel" onclick="closeDeleteModal()">キャンセル</button>
-  </div>
-</div>
 
 <!-- ===== HOME ===== -->
 <div class="screen active" id="sc-home">
@@ -211,8 +214,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
     </div>
     <div class="home-card" onclick="go('sc-site-list')">
       <div class="home-card-icon">📍</div>
-      <div class="home-card-label">現場登録</div>
-      <div class="home-card-sub" id="home-site-count">現場を登録・管理</div>
+      <div class="home-card-label">現場管理</div>
+      <div class="home-card-sub" id="home-site-count">現場を登録・確認</div>
     </div>
     <div class="home-card" onclick="showToast('近日公開予定')">
       <div class="home-card-icon">👷</div>
@@ -220,13 +223,38 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
       <div class="home-card-sub">現場仲間を追加</div>
     </div>
   </div>
+  <!-- 今月の使用金額 -->
+  <div style="padding:0 0 4px;">
+    <div style="font-size:11px;font-weight:900;color:var(--sub);padding:4px 14px 8px;letter-spacing:.05em;">📊 今月の発注サマリ</div>
+    <div class="monthly-card">
+      <div class="monthly-title">TODAY'S MONTH SUMMARY</div>
+      <div class="monthly-grid">
+        <div class="monthly-stat">
+          <div class="monthly-num green" id="monthly-total">--</div>
+          <div class="monthly-label">今月の発注総額</div>
+        </div>
+        <div class="monthly-stat">
+          <div class="monthly-num" id="monthly-count">--</div>
+          <div class="monthly-label">今月の注文件数</div>
+        </div>
+        <div class="monthly-stat">
+          <div class="monthly-num" id="monthly-items">--</div>
+          <div class="monthly-label">今月の発注品目数</div>
+        </div>
+        <div class="monthly-stat">
+          <div class="monthly-num" id="monthly-hoist">--</div>
+          <div class="monthly-label">荷揚げ利用回数</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- ===== 現場登録（一覧） ===== -->
+<!-- ===== 現場管理 ===== -->
 <div class="screen" id="sc-site-list">
   <div class="header">
     <button class="header-back" onclick="go('sc-home')">‹</button>
-    <span class="header-title">現場登録</span>
+    <span class="header-title">現場管理</span>
   </div>
   <div class="scroll" style="padding-top:10px;">
     <div class="site-count-bar">
@@ -235,17 +263,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
     </div>
     <div class="sec-head">登録済み現場</div>
     <div id="site-list-area"></div>
-    <div class="site-add-btn" id="site-add-btn" onclick="openSiteForm(null)">
+    <div class="site-add-btn" id="site-add-btn" onclick="go('sc-site-register')">
       ＋ 新しい現場を登録する
     </div>
   </div>
 </div>
 
-<!-- ===== 現場フォーム（登録・編集） ===== -->
-<div class="screen" id="sc-site-form">
+<!-- ===== 現場登録 ===== -->
+<div class="screen" id="sc-site-register">
   <div class="header">
     <button class="header-back" onclick="go('sc-site-list')">‹</button>
-    <span class="header-title" id="site-form-title">現場を登録する</span>
+    <span class="header-title">現場を登録する</span>
   </div>
   <div class="scroll">
     <div style="padding:16px 16px 0;">
@@ -268,14 +296,22 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
       <div class="form-group">
         <label class="form-label">搬入可能時間</label>
         <div class="form-row">
-          <select class="form-select" id="reg-time-start"></select>
+          <select class="form-select" id="reg-time-start">
+            <option>6:00</option><option>7:00</option><option selected>8:00</option>
+            <option>9:00</option><option>10:00</option><option>11:00</option>
+            <option>12:00</option><option>13:00</option>
+          </select>
           <span class="form-row-sep">〜</span>
-          <select class="form-select" id="reg-time-end"></select>
+          <select class="form-select" id="reg-time-end">
+            <option>14:00</option><option>15:00</option><option>16:00</option>
+            <option selected>17:00</option><option>18:00</option><option>19:00</option>
+            <option>20:00</option>
+          </select>
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">備考・注意事項</label>
-        <textarea class="form-input" id="reg-note" rows="3" placeholder="例：○○号室まで搬入。エレベーターは右奥。"></textarea>
+        <textarea class="form-input" id="reg-note" rows="3" placeholder="例：○○号室まで搬入をお願いします。エレベーターは右奥。"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">登録者名</label>
@@ -284,7 +320,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
     </div>
   </div>
   <div class="bottom-bar">
-    <button class="primary-btn" id="site-form-submit-btn" onclick="saveSite()">📍 登録する</button>
+    <button class="primary-btn" onclick="registerSite()">📍 現場を登録する</button>
     <button class="secondary-btn" onclick="go('sc-site-list')">キャンセル</button>
   </div>
 </div>
@@ -330,10 +366,12 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
   <div class="scroll">
     <div class="sec-head">📍 配送先現場を選ぶ</div>
     <div id="delivery-site-list"></div>
-    <div class="site-add-btn" style="margin-bottom:4px;" onclick="go('sc-site-form');openSiteForm(null)">＋ 新しい現場を登録する</div>
+    <div class="site-add-btn" style="margin-bottom:4px;" onclick="go('sc-site-register')">＋ 新しい現場を登録する</div>
+
+    <!-- 担当者・連絡先（編集可） -->
     <div class="sec-head">👤 担当者・連絡先（編集可）</div>
     <div class="contact-edit-card">
-      <div class="contact-edit-title">登録情報が自動入力されます。発注時に変更できます。</div>
+      <div class="contact-edit-title">現場担当者情報（発注時に変更できます）</div>
       <div class="form-group">
         <label class="form-label">担当者名</label>
         <input type="text" class="form-input" id="edit-contact" placeholder="例：田中 一郎">
@@ -343,8 +381,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
         <input type="tel" class="form-input" id="edit-phone" placeholder="例：090-1234-5678">
       </div>
     </div>
+
     <div class="sec-head">📅 希望配送日</div>
     <div class="date-scroll" id="date-scroll"></div>
+
     <div class="sec-head">🕐 希望時間帯</div>
     <div class="time-list">
       <div class="time-card selected" onclick="selTime(this,'午前8時〜午前10時')">
@@ -365,6 +405,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
         <div class="time-label">午後3時 〜 午後5時</div>
       </div>
     </div>
+
     <div class="sec-head">🏗️ 荷揚げオプション</div>
     <div class="hoist-grid">
       <div class="hoist-card selected" id="hoist-no" onclick="selHoist('no')">
@@ -404,7 +445,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
     <div class="sec-head" style="padding-top:14px;">📦 注文商品</div>
     <div class="conf-card">
       <div id="conf-items-list"></div>
-      <div class="total-row"><span class="total-label">商品合計</span><span class="total-val" id="conf-subtotal"></span></div>
+      <div class="total-row">
+        <span class="total-label">商品合計</span>
+        <span class="total-val" id="conf-subtotal"></span>
+      </div>
     </div>
     <div class="sec-head">📍 配送情報</div>
     <div class="conf-card">
@@ -511,47 +555,50 @@ var CATEGORIES = [
   ]}
 ];
 
-// 8:00〜21:00
-var TIME_OPTIONS = ['8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
-
 var cart     = {};
 var delivery = { site:"", address:"", contact:"", phone:"", siteTime:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
-var sites    = [];
-var editingIdx = null; // 編集中の現場インデックス
-var deleteIdx  = null; // 削除対象インデックス
+var sites    = []; // スプシから取得した現場リスト
 
 // ===== 起動 =====
 window.addEventListener('load', function() {
-  buildTimeSelects();
+  go('sc-home');
   buildCatTabs();
   buildDateScroll();
   loadSites();
-  go('sc-home');
+  loadMonthlySummary();
 });
 
-// ===== 時間選択肢を生成 =====
-function buildTimeSelects() {
-  ['reg-time-start','reg-time-end'].forEach(function(id, i) {
-    var sel = document.getElementById(id);
-    TIME_OPTIONS.forEach(function(t) {
-      var opt = document.createElement('option');
-      opt.value = t; opt.textContent = t;
-      if (i===0 && t==='8:00')  opt.selected = true;
-      if (i===1 && t==='17:00') opt.selected = true;
-      sel.appendChild(opt);
+// ===== 今月のサマリをGASから取得 =====
+function loadMonthlySummary() {
+  fetch(GAS_URL + '?action=getMonthlySummary')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        document.getElementById('monthly-total').textContent  = '¥' + (data.total  || 0).toLocaleString();
+        document.getElementById('monthly-count').textContent  = (data.count  || 0) + '件';
+        document.getElementById('monthly-items').textContent  = (data.items  || 0) + '品目';
+        document.getElementById('monthly-hoist').textContent  = (data.hoist  || 0) + '回';
+      }
+    })
+    .catch(function() {
+      document.getElementById('monthly-total').textContent = '¥0';
+      document.getElementById('monthly-count').textContent = '0件';
+      document.getElementById('monthly-items').textContent = '0品目';
+      document.getElementById('monthly-hoist').textContent = '0回';
     });
-  });
 }
 
-// ===== 現場データをGASから取得 =====
+// ===== 現場リストをGASから取得 =====
 function loadSites() {
   fetch(GAS_URL + '?action=getSites')
     .then(function(r){ return r.json(); })
     .then(function(data) {
-      if (data.status === 'ok') { sites = data.sites || []; }
-      renderSiteList();
-      renderDeliverySiteList();
-      updateHomeSiteCount();
+      if (data.status === 'ok') {
+        sites = data.sites || [];
+        renderSiteList();
+        renderDeliverySiteList();
+        updateHomeSiteCount();
+      }
     })
     .catch(function() {
       sites = [];
@@ -564,7 +611,9 @@ function updateHomeSiteCount() {
   document.getElementById('home-site-count').textContent = sites.length + '件登録済み';
 }
 
-// ===== 現場一覧レンダリング =====
+// ===== 現場管理画面 =====
+var siteStats = {}; // 現場別集計データ
+
 function renderSiteList() {
   var area = document.getElementById('site-list-area');
   area.innerHTML = '';
@@ -572,62 +621,85 @@ function renderSiteList() {
 
   if (sites.length === 0) {
     area.innerHTML = '<div style="text-align:center;padding:24px;color:var(--sub);font-size:13px;">まだ現場が登録されていません</div>';
+    var addBtn = document.getElementById('site-add-btn');
+    if (addBtn) addBtn.style.display = 'block';
+    return;
   }
 
-  sites.forEach(function(site, i) {
+  // ローディング表示
+  sites.forEach(function(site) {
     var card = document.createElement('div');
-    card.className = 'site-card';
+    card.className = 'site-stats-card';
+    card.id = 'sitecard-' + encodeKey(site.name);
     card.innerHTML =
-      '<div class="site-card-top"><div style="flex:1;">'
-      + '<div class="site-name">'+site.name+'</div>'
-      + '<div class="site-addr">'+site.address+'</div>'
-      + '</div></div>'
-      + '<div class="site-meta">'
-      + (site.contact   ? '<div class="site-meta-item">👤 '+site.contact+'</div>' : '')
-      + (site.phone     ? '<div class="site-meta-item">📞 '+site.phone+'</div>' : '')
-      + (site.timeStart && site.timeEnd ? '<div class="site-meta-item">🕐 搬入可能 '+site.timeStart+'〜'+site.timeEnd+'</div>' : '')
-      + (site.note      ? '<div class="site-meta-item">📝 '+site.note+'</div>' : '')
+      '<div class="site-stats-top">'
+      + '<div><div class="site-stats-name">'+site.name+'</div><div class="site-stats-addr">'+site.address+'</div></div>'
       + '</div>'
-      + '<div class="site-actions">'
-      + '<button class="site-action-btn site-edit-btn" onclick="openSiteForm('+i+')">✏️ 編集</button>'
-      + '<button class="site-action-btn site-delete-btn" onclick="openDeleteModal('+i+')">🗑️ 削除</button>'
+      + '<div class="site-meta" style="margin-bottom:8px;">'
+      + (site.contact ? '<div class="site-meta-item">👤 '+site.contact+'</div>' : '')
+      + (site.phone   ? '<div class="site-meta-item">📞 '+site.phone+'</div>' : '')
+      + (site.timeStart && site.timeEnd ? '<div class="site-meta-item">🕐 搬入可能 '+site.timeStart+'〜'+site.timeEnd+'</div>' : '')
+      + (site.note    ? '<div class="site-meta-item">📝 '+site.note+'</div>' : '')
+      + '</div>'
+      + '<div class="site-stats-grid" id="stats-'+encodeKey(site.name)+'">'
+      + '<div class="site-stat-item"><div class="site-stat-num">--</div><div class="site-stat-label">発注件数</div></div>'
+      + '<div class="site-stat-item"><div class="site-stat-num">--</div><div class="site-stat-label">発注総額</div></div>'
+      + '<div class="site-stat-item"><div class="site-stat-num">--</div><div class="site-stat-label">荷揚げ回数</div></div>'
       + '</div>';
     area.appendChild(card);
   });
+
+  // 集計データを取得して表示
+  loadSiteStats();
 
   var addBtn = document.getElementById('site-add-btn');
   if (addBtn) addBtn.style.display = sites.length >= MAX_SITES ? 'none' : 'block';
 }
 
-// ===== 現場フォームを開く（登録 or 編集） =====
-function openSiteForm(idx) {
-  editingIdx = idx;
-  var isEdit = idx !== null;
-  document.getElementById('site-form-title').textContent = isEdit ? '現場を編集する' : '現場を登録する';
-  document.getElementById('site-form-submit-btn').textContent = isEdit ? '✏️ 変更を保存する' : '📍 登録する';
-
-  if (isEdit) {
-    var s = sites[idx];
-    document.getElementById('reg-name').value       = s.name      || '';
-    document.getElementById('reg-address').value    = s.address   || '';
-    document.getElementById('reg-contact').value    = s.contact   || '';
-    document.getElementById('reg-phone').value      = s.phone     || '';
-    document.getElementById('reg-time-start').value = s.timeStart || '8:00';
-    document.getElementById('reg-time-end').value   = s.timeEnd   || '17:00';
-    document.getElementById('reg-note').value       = s.note      || '';
-    document.getElementById('reg-by').value         = s.registeredBy || '';
-  } else {
-    ['reg-name','reg-address','reg-contact','reg-phone','reg-note','reg-by'].forEach(function(id){
-      document.getElementById(id).value = '';
+function loadSiteStats() {
+  fetch(GAS_URL + '?action=getSiteStats')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok' && data.stats) {
+        data.stats.forEach(function(stat) {
+          var key = encodeKey(stat.name);
+          var el = document.getElementById('stats-' + key);
+          if (el) {
+            el.innerHTML =
+              '<div class="site-stat-item">'
+              + '<div class="site-stat-num">'+stat.count+'件</div>'
+              + '<div class="site-stat-label">発注件数</div>'
+              + '</div>'
+              + '<div class="site-stat-item">'
+              + '<div class="site-stat-num" style="font-size:13px;">¥'+stat.total.toLocaleString()+'</div>'
+              + '<div class="site-stat-label">発注総額</div>'
+              + '<div class="site-stat-sub">累計</div>'
+              + '</div>'
+              + '<div class="site-stat-item">'
+              + '<div class="site-stat-num">'+stat.hoist+'回</div>'
+              + '<div class="site-stat-label">荷揚げ</div>'
+              + '</div>';
+          }
+        });
+      }
+    })
+    .catch(function() {
+      // エラー時はゼロ表示
+      sites.forEach(function(site) {
+        var key = encodeKey(site.name);
+        var el = document.getElementById('stats-' + key);
+        if (el) {
+          el.innerHTML =
+            '<div class="site-stat-item"><div class="site-stat-num">0件</div><div class="site-stat-label">発注件数</div></div>'
+            + '<div class="site-stat-item"><div class="site-stat-num">¥0</div><div class="site-stat-label">発注総額</div></div>'
+            + '<div class="site-stat-item"><div class="site-stat-num">0回</div><div class="site-stat-label">荷揚げ</div></div>';
+        }
+      });
     });
-    document.getElementById('reg-time-start').value = '8:00';
-    document.getElementById('reg-time-end').value   = '17:00';
-  }
-  go('sc-site-form');
 }
 
-// ===== 現場保存（登録 or 編集） =====
-function saveSite() {
+// ===== 現場登録 =====
+function registerSite() {
   var name      = document.getElementById('reg-name').value.trim();
   var address   = document.getElementById('reg-address').value.trim();
   var contact   = document.getElementById('reg-contact').value.trim();
@@ -637,109 +709,91 @@ function saveSite() {
   var note      = document.getElementById('reg-note').value.trim();
   var by        = document.getElementById('reg-by').value.trim();
 
-  if (!name)    { showToast('現場名を入力してください'); return; }
-  if (!address) { showToast('住所を入力してください');   return; }
-  if (editingIdx === null && sites.length >= MAX_SITES) {
-    showToast('登録できる現場は最大'+MAX_SITES+'件です'); return;
-  }
-
-  var siteData = { name:name, address:address, contact:contact, phone:phone,
-                   timeStart:timeStart, timeEnd:timeEnd, note:note, registeredBy:by };
+  if (!name) { showToast('現場名を入力してください'); return; }
+  if (!address) { showToast('住所を入力してください'); return; }
+  if (sites.length >= MAX_SITES) { showToast('登録できる現場は最大'+MAX_SITES+'件です'); return; }
 
   showLoading(true);
 
-  var action = editingIdx !== null ? 'updateSite' : 'registerSite';
-  var payload = Object.assign({ action:action }, siteData);
-  if (editingIdx !== null) payload.index = editingIdx;
-
   fetch(GAS_URL, {
-    method:'POST', mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
+    method:  'POST',
+    mode:    'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action:      'registerSite',
+      name:        name,
+      address:     address,
+      contact:     contact,
+      phone:       phone,
+      timeStart:   timeStart,
+      timeEnd:     timeEnd,
+      note:        note,
+      registeredBy: by
+    })
   })
-  .then(function(){ afterSave(siteData); })
-  .catch(function(){ afterSave(siteData); });
-}
-
-function afterSave(siteData) {
-  if (editingIdx !== null) {
-    sites[editingIdx] = siteData;
-  } else {
-    sites.push(siteData);
-  }
-  renderSiteList();
-  renderDeliverySiteList();
-  updateHomeSiteCount();
-  showLoading(false);
-  var msg = editingIdx !== null ? '✅ 現場を更新しました！' : '✅ 現場を登録しました！';
-  showToast(msg, true);
-  setTimeout(function(){ go('sc-site-list'); }, 1200);
-}
-
-// ===== 削除モーダル =====
-function openDeleteModal(idx) {
-  deleteIdx = idx;
-  document.getElementById('delete-modal-name').textContent = '「' + sites[idx].name + '」を削除します。この操作は取り消せません。';
-  document.getElementById('delete-modal').classList.add('show');
-}
-
-function closeDeleteModal() {
-  document.getElementById('delete-modal').classList.remove('show');
-  deleteIdx = null;
-}
-
-function confirmDelete() {
-  if (deleteIdx === null) return;
-  showLoading(true);
-  var payload = { action:'deleteSite', index:deleteIdx };
-  fetch(GAS_URL, {
-    method:'POST', mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
+  .then(function() {
+    // ローカルにも追加
+    sites.push({ name:name, address:address, contact:contact, phone:phone, timeStart:timeStart, timeEnd:timeEnd, note:note });
+    renderSiteList();
+    renderDeliverySiteList();
+    updateHomeSiteCount();
+    // フォームリセット
+    ['reg-name','reg-address','reg-contact','reg-phone','reg-note','reg-by'].forEach(function(id){
+      document.getElementById(id).value = '';
+    });
+    showLoading(false);
+    showToast('✅ 現場を登録しました！', true);
+    setTimeout(function(){ go('sc-site-list'); }, 1200);
   })
-  .then(function(){ afterDelete(); })
-  .catch(function(){ afterDelete(); });
-}
-
-function afterDelete() {
-  sites.splice(deleteIdx, 1);
-  closeDeleteModal();
-  renderSiteList();
-  renderDeliverySiteList();
-  updateHomeSiteCount();
-  showLoading(false);
-  showToast('🗑️ 現場を削除しました', false);
+  .catch(function() {
+    // no-corsなので成功扱い
+    sites.push({ name:name, address:address, contact:contact, phone:phone, timeStart:timeStart, timeEnd:timeEnd, note:note });
+    renderSiteList();
+    renderDeliverySiteList();
+    updateHomeSiteCount();
+    ['reg-name','reg-address','reg-contact','reg-phone','reg-note','reg-by'].forEach(function(id){
+      document.getElementById(id).value = '';
+    });
+    showLoading(false);
+    showToast('✅ 現場を登録しました！', true);
+    setTimeout(function(){ go('sc-site-list'); }, 1200);
+  });
 }
 
 // ===== 発注時の現場リスト =====
 function renderDeliverySiteList() {
   var list = document.getElementById('delivery-site-list');
   list.innerHTML = '';
+
   if (sites.length === 0) {
     list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--sub);font-size:13px;">現場が登録されていません<br>先に現場を登録してください</div>';
     return;
   }
+
   sites.forEach(function(site, i) {
     var card = document.createElement('div');
-    card.className = 'site-card selectable';
+    card.className = 'site-card';
     card.innerHTML =
       '<div class="site-card-top">'
       + '<div class="radio"><div class="rdot"></div></div>'
       + '<div style="flex:1;">'
       + '<div class="site-name">'+site.name+'</div>'
       + '<div class="site-addr">'+site.address+'</div>'
-      + '</div></div>'
+      + '</div>'
+      + '</div>'
       + '<div class="site-meta">'
-      + (site.contact   ? '<div class="site-meta-item">👤 '+site.contact+'</div>' : '')
-      + (site.phone     ? '<div class="site-meta-item">📞 '+site.phone+'</div>' : '')
+      + (site.contact ? '<div class="site-meta-item">👤 '+site.contact+'</div>' : '')
+      + (site.phone   ? '<div class="site-meta-item">📞 '+site.phone+'</div>' : '')
       + (site.timeStart && site.timeEnd ? '<div class="site-meta-item">🕐 搬入可能 '+site.timeStart+'〜'+site.timeEnd+'</div>' : '')
       + '</div>';
+
     card.onclick = function() {
       document.querySelectorAll('#delivery-site-list .site-card').forEach(function(c){ c.classList.remove('selected'); });
       card.classList.add('selected');
       delivery.site     = site.name;
       delivery.address  = site.address;
       delivery.siteTime = site.timeStart && site.timeEnd ? site.timeStart+'〜'+site.timeEnd : '指定なし';
+      // 担当者・連絡先を自動入力（編集可）
       document.getElementById('edit-contact').value = site.contact || '';
       document.getElementById('edit-phone').value   = site.phone   || '';
       document.getElementById('delivery-next-btn').disabled = false;
@@ -752,7 +806,9 @@ function renderDeliverySiteList() {
 function startOrder() {
   cart = {};
   delivery = { site:"", address:"", contact:"", phone:"", siteTime:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
-  buildCatTabs(); showCategory(0); updateCartBar();
+  buildCatTabs();
+  showCategory(0);
+  updateCartBar();
   document.querySelectorAll('.time-card').forEach(function(c,i){ c.classList.toggle('selected', i===0); });
   document.getElementById('hoist-no').classList.add('selected');
   document.getElementById('hoist-yes').classList.remove('selected');
@@ -768,7 +824,7 @@ function buildCatTabs() {
   tabs.innerHTML = '';
   CATEGORIES.forEach(function(cat, i) {
     var btn = document.createElement('button');
-    btn.className = 'cat-tab'+(i===0?' active':'');
+    btn.className = 'cat-tab' + (i===0?' active':'');
     btn.textContent = cat.name;
     btn.onclick = function() {
       document.querySelectorAll('.cat-tab').forEach(function(t){ t.classList.remove('active'); });
@@ -785,14 +841,15 @@ function showCategory(idx) {
   CATEGORIES[idx].items.forEach(function(group) {
     var section = document.createElement('div');
     section.className = 'product-section';
-    var gName = document.createElement('div');
-    gName.className = 'product-group-name';
-    gName.textContent = group.group;
-    section.appendChild(gName);
+    var groupName = document.createElement('div');
+    groupName.className = 'product-group-name';
+    groupName.textContent = group.group;
+    section.appendChild(groupName);
     group.products.forEach(function(product) {
       var row = document.createElement('div');
       row.className = 'product-row';
       var qty = cart[product.name] ? cart[product.name].qty : 0;
+      var key = encodeKey(product.name);
       row.innerHTML =
         '<div class="product-info">'
         + '<div class="product-name">'+product.name+'</div>'
@@ -800,7 +857,7 @@ function showCategory(idx) {
         + '</div>'
         + '<div class="qty-ctrl">'
         + '<button class="qty-btn" onclick="changeCartQty(\''+product.name+'\','+product.price+',-1,this)">−</button>'
-        + '<span class="qty-num'+(qty>0?' has-qty':'')+'" id="qty-'+encodeKey(product.name)+'">'+qty+'</span>'
+        + '<span class="qty-num'+(qty>0?' has-qty':'')+'" id="qty-'+key+'">'+qty+'</span>'
         + '<button class="qty-btn" onclick="changeCartQty(\''+product.name+'\','+product.price+',1,this)">＋</button>'
         + '</div>';
       section.appendChild(row);
@@ -815,125 +872,160 @@ function encodeKey(name) {
 
 function changeCartQty(name, price, delta, btn) {
   if (!cart[name]) cart[name] = { price:price, qty:0 };
-  cart[name].qty = Math.max(0, cart[name].qty+delta);
-  if (cart[name].qty===0) delete cart[name];
+  cart[name].qty = Math.max(0, cart[name].qty + delta);
+  if (cart[name].qty === 0) delete cart[name];
   var numEl = btn.parentElement.querySelector('.qty-num');
   var qty = cart[name] ? cart[name].qty : 0;
   numEl.textContent = qty;
-  numEl.className = 'qty-num'+(qty>0?' has-qty':'');
+  numEl.className = 'qty-num' + (qty > 0 ? ' has-qty' : '');
   updateCartBar();
 }
 
 function updateCartBar() {
-  var total=0; var count=0;
-  Object.keys(cart).forEach(function(name){ total+=cart[name].price*cart[name].qty; count+=cart[name].qty; });
-  document.getElementById('cart-total').textContent = '¥'+total.toLocaleString();
+  var total = 0; var count = 0;
+  Object.keys(cart).forEach(function(name) {
+    total += cart[name].price * cart[name].qty;
+    count += cart[name].qty;
+  });
+  document.getElementById('cart-total').textContent = '¥' + total.toLocaleString();
   var itemCount = Object.keys(cart).length;
-  document.getElementById('cart-count').textContent = itemCount+'品目 / 計'+count+'個 選択中';
-  document.getElementById('cart-next-btn').disabled = itemCount===0;
+  document.getElementById('cart-count').textContent = itemCount + '品目 / 計' + count + '個 選択中';
+  document.getElementById('cart-next-btn').disabled = itemCount === 0;
 }
 
+// ===== 日付 =====
 function buildDateScroll() {
   var scroll = document.getElementById('date-scroll');
   scroll.innerHTML = '';
-  var days=['日','月','火','水','木','金','土'];
+  var days = ['日','月','火','水','木','金','土'];
   var today = new Date();
-  for (var i=1;i<=7;i++) {
-    var d=new Date(today); d.setDate(today.getDate()+i);
-    var month=d.getMonth()+1; var date=d.getDate(); var week=days[d.getDay()];
-    var label=i===1?'明日':i===2?'明後日':'';
-    var dateStr=month+'/'+date+'('+week+')';
-    var chip=document.createElement('div');
-    chip.className='date-chip'+(i===1?' selected':'');
-    chip.dataset.date=dateStr;
-    chip.innerHTML='<div class="date-day">'+label+'</div><div class="date-num">'+date+'</div><div class="date-week">'+week+'</div>';
-    chip.onclick=function(){
-      document.querySelectorAll('.date-chip').forEach(function(c){c.classList.remove('selected');});
-      this.classList.add('selected'); delivery.date=this.dataset.date;
+  for (var i = 1; i <= 7; i++) {
+    var d = new Date(today);
+    d.setDate(today.getDate() + i);
+    var month = d.getMonth()+1; var date = d.getDate(); var week = days[d.getDay()];
+    var label = i===1?'明日':i===2?'明後日':'';
+    var dateStr = month+'/'+date+'('+week+')';
+    var chip = document.createElement('div');
+    chip.className = 'date-chip'+(i===1?' selected':'');
+    chip.dataset.date = dateStr;
+    chip.innerHTML = '<div class="date-day">'+label+'</div><div class="date-num">'+date+'</div><div class="date-week">'+week+'</div>';
+    chip.onclick = function() {
+      document.querySelectorAll('.date-chip').forEach(function(c){ c.classList.remove('selected'); });
+      this.classList.add('selected');
+      delivery.date = this.dataset.date;
     };
     scroll.appendChild(chip);
-    if(i===1) delivery.date=dateStr;
+    if (i===1) delivery.date = dateStr;
   }
 }
 
-function selTime(el,time){
-  document.querySelectorAll('.time-card').forEach(function(c){c.classList.remove('selected');});
-  el.classList.add('selected'); delivery.time=time;
+function selTime(el, time) {
+  document.querySelectorAll('.time-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  delivery.time = time;
 }
 
-function selHoist(type){
-  delivery.hoist=type;
-  document.getElementById('hoist-no').classList.toggle('selected',type==='no');
-  document.getElementById('hoist-yes').classList.toggle('selected',type==='yes');
+function selHoist(type) {
+  delivery.hoist = type;
+  document.getElementById('hoist-no').classList.toggle('selected', type==='no');
+  document.getElementById('hoist-yes').classList.toggle('selected', type==='yes');
 }
 
-function goToConfirm(){
-  delivery.contact=document.getElementById('edit-contact').value.trim();
-  delivery.phone=document.getElementById('edit-phone').value.trim();
-  var subtotal=0; var itemsHtml='';
-  Object.keys(cart).forEach(function(name){
-    var item=cart[name]; var price=item.price*item.qty; subtotal+=price;
-    itemsHtml+='<div class="cart-item-row"><span>'+name+' ×'+item.qty+'</span><span style="font-weight:700;color:var(--gd)">¥'+price.toLocaleString()+'</span></div>';
+// ===== 確認画面 =====
+function goToConfirm() {
+  delivery.contact = document.getElementById('edit-contact').value.trim();
+  delivery.phone   = document.getElementById('edit-phone').value.trim();
+
+  var subtotal = 0;
+  var itemsHtml = '';
+  Object.keys(cart).forEach(function(name) {
+    var item = cart[name]; var price = item.price * item.qty;
+    subtotal += price;
+    itemsHtml += '<div class="cart-item-row"><span>'+name+' ×'+item.qty+'</span><span style="font-weight:700;color:var(--gd)">¥'+price.toLocaleString()+'</span></div>';
   });
-  var hoistFee=delivery.hoist==='yes'?8000:0;
-  var total=subtotal+hoistFee;
-  document.getElementById('conf-items-list').innerHTML=itemsHtml;
-  document.getElementById('conf-subtotal').textContent='¥'+subtotal.toLocaleString();
-  document.getElementById('conf-subtotal2').textContent='¥'+subtotal.toLocaleString();
-  document.getElementById('conf-total').textContent='¥'+total.toLocaleString();
-  document.getElementById('conf-site').textContent=delivery.site;
-  document.getElementById('conf-address').textContent=delivery.address;
-  document.getElementById('conf-contact').textContent=delivery.contact||'未入力';
-  document.getElementById('conf-phone').textContent=delivery.phone||'未入力';
-  document.getElementById('conf-site-time').textContent=delivery.siteTime||'指定なし';
-  document.getElementById('conf-date').textContent=delivery.date;
-  document.getElementById('conf-time').textContent=delivery.time;
-  document.getElementById('conf-hoist').textContent=delivery.hoist==='yes'?'🏗️ あり（＋¥8,000）':'なし（車上渡し）';
-  document.getElementById('conf-hoist-row').style.display=delivery.hoist==='yes'?'flex':'none';
+  var hoistFee = delivery.hoist==='yes'?8000:0;
+  var total    = subtotal + hoistFee;
+
+  document.getElementById('conf-items-list').innerHTML  = itemsHtml;
+  document.getElementById('conf-subtotal').textContent  = '¥'+subtotal.toLocaleString();
+  document.getElementById('conf-subtotal2').textContent = '¥'+subtotal.toLocaleString();
+  document.getElementById('conf-total').textContent     = '¥'+total.toLocaleString();
+  document.getElementById('conf-site').textContent      = delivery.site;
+  document.getElementById('conf-address').textContent   = delivery.address;
+  document.getElementById('conf-contact').textContent   = delivery.contact || '未入力';
+  document.getElementById('conf-phone').textContent     = delivery.phone   || '未入力';
+  document.getElementById('conf-site-time').textContent = delivery.siteTime || '指定なし';
+  document.getElementById('conf-date').textContent      = delivery.date;
+  document.getElementById('conf-time').textContent      = delivery.time;
+  document.getElementById('conf-hoist').textContent     = delivery.hoist==='yes'?'🏗️ あり（＋¥8,000）':'なし（車上渡し）';
+  document.getElementById('conf-hoist-row').style.display = delivery.hoist==='yes'?'flex':'none';
   go('sc-confirm');
 }
 
-function submitOrder(){
-  var subtotal=0; var itemsArray=[];
-  Object.keys(cart).forEach(function(name){
-    var item=cart[name]; var itemTotal=item.price*item.qty; subtotal+=itemTotal;
-    itemsArray.push({name:name,qty:item.qty,price:item.price,subtotal:itemTotal});
+// ===== 注文確定 =====
+function submitOrder() {
+  var subtotal = 0; var itemsArray = [];
+  Object.keys(cart).forEach(function(name) {
+    var item = cart[name]; var itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
+    itemsArray.push({ name:name, qty:item.qty, price:item.price, subtotal:itemTotal });
   });
-  var hoistFee=delivery.hoist==='yes'?8000:0;
-  var total=subtotal+hoistFee;
-  var orderNum='#ORD-'+String(Math.floor(Math.random()*9000)+1000);
-  var timestamp=new Date().toLocaleString('ja-JP');
-  var payload={
-    action:'order', timestamp:timestamp, orderNum:orderNum,
-    items:itemsArray, site:delivery.site, siteAddress:delivery.address,
-    contact:delivery.contact, phone:delivery.phone, siteTime:delivery.siteTime,
-    date:delivery.date, time:delivery.time,
-    hoist:delivery.hoist==='yes'?'あり（＋¥8,000）':'なし',
-    subtotal:subtotal, hoistFee:hoistFee, total:total
+  var hoistFee  = delivery.hoist==='yes'?8000:0;
+  var total     = subtotal + hoistFee;
+  var orderNum  = '#ORD-'+String(Math.floor(Math.random()*9000)+1000);
+  var timestamp = new Date().toLocaleString('ja-JP');
+
+  var payload = {
+    action:      'order',
+    timestamp:   timestamp,
+    orderNum:    orderNum,
+    items:       itemsArray,
+    site:        delivery.site,
+    siteAddress: delivery.address,
+    contact:     delivery.contact,
+    phone:       delivery.phone,
+    siteTime:    delivery.siteTime,
+    date:        delivery.date,
+    time:        delivery.time,
+    hoist:       delivery.hoist==='yes'?'あり（＋¥8,000）':'なし',
+    subtotal:    subtotal,
+    hoistFee:    hoistFee,
+    total:       total
   };
-  fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
-  document.getElementById('order-num').textContent=orderNum;
-  document.getElementById('done-site').textContent=delivery.site;
-  document.getElementById('done-contact').textContent=delivery.contact||'未入力';
-  document.getElementById('done-datetime').textContent=delivery.date+' '+delivery.time;
-  document.getElementById('done-items').textContent=itemsArray.length+'品目';
-  document.getElementById('done-total').textContent='¥'+total.toLocaleString();
-  document.getElementById('complete-timer').textContent='⏱ '+delivery.date+' '+delivery.time+' 到着予定';
+
+  fetch(GAS_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).catch(function(){});
+
+  document.getElementById('order-num').textContent      = orderNum;
+  document.getElementById('done-site').textContent      = delivery.site;
+  document.getElementById('done-contact').textContent   = delivery.contact || '未入力';
+  document.getElementById('done-datetime').textContent  = delivery.date+' '+delivery.time;
+  document.getElementById('done-items').textContent     = itemsArray.length+'品目';
+  document.getElementById('done-total').textContent     = '¥'+total.toLocaleString();
+  document.getElementById('complete-timer').textContent = '⏱ '+delivery.date+' '+delivery.time+' 到着予定';
   go('sc-complete');
 }
 
-function go(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+// ===== ユーティリティ =====
+function go(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
-function showLoading(show){ document.getElementById('loading-overlay').classList.toggle('show',show); }
-function showToast(msg,success){
-  var t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast'+(success?' success':'');
+
+function showLoading(show) {
+  document.getElementById('loading-overlay').classList.toggle('show', show);
+}
+
+function showToast(msg, success) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (success ? ' success' : '');
   t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2200);
+  setTimeout(function(){ t.classList.remove('show'); }, 2200);
 }
 </script>
 </body>
