@@ -712,6 +712,8 @@ var CATEGORIES = [
 
 var cart     = {};
 var delivery = { site:"", address:"", contact:"", phone:"", siteTime:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
+var aiHistory = [];
+var searchImageBase64 = null;
 var sites    = []; // スプシから取得した現場リスト
 
 // ===== 認証・会社管理 =====
@@ -1313,6 +1315,113 @@ function showToast(msg, success) {
   t.className = 'toast' + (success ? ' success' : '');
   t.classList.add('show');
   setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+// ===== AIコンシェルジュ =====
+function addAiMessage(type, text) {
+  var box = document.getElementById('ai-messages');
+  var div = document.createElement('div');
+  div.className = 'ai-msg ' + type;
+  div.innerHTML = text.replace(/\n/g, '<br>');
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendAiMessage(msg) {
+  addAiMessage('user', msg);
+  aiHistory.push({ role: 'user', content: msg });
+  addAiMessage('ai', '考え中...');
+
+  var systemPrompt = 'あなたはKenzaiクラウドのAIコンシェルジュです。建築資材の発注サポートを行います。\n'
+    + '取扱商品と価格（税別）：\n'
+    + '【石膏ボード】石膏ボード9.5mm 3×6 ¥500 / 石膏ボード12.5mm 3×6 ¥680 / 強化石膏ボード15mm 3×6 ¥820\n'
+    + '【ラワンベニヤ】3mm 3×6 ¥1,800 / 12mm 3×6 ¥2,400 / 24mm 3×6 ¥3,800\n'
+    + '【針葉樹合板】9mm 3×6 ¥1,600 / 12mm 3×6 ¥2,100 / 24mm 3×6 ¥2,900\n'
+    + '【タルキ赤松】45×45 4m ¥450 / 45×60 4m ¥580\n'
+    + '【杉・桧角材】杉105×105mm 3m ¥3,200 / 杉90×90mm 3m ¥2,800 / 桧90×90mm 3m無節 ¥5,800\n'
+    + '【集成材】E120 120×240 4m ¥8,500\n'
+    + '【荷揚げ】+¥8,000\n'
+    + '日本語で簡潔に回答してください。見積もり依頼には数量と合計金額を表形式で出してください。';
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'claudeChat', system: systemPrompt, messages: aiHistory.slice(-10) })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var msgs = document.getElementById('ai-messages');
+    msgs.removeChild(msgs.lastChild);
+    var reply = data.reply || 'エラーが発生しました。もう一度お試しください。';
+    addAiMessage('ai', reply);
+    aiHistory.push({ role: 'assistant', content: reply });
+  })
+  .catch(function(e) {
+    var msgs = document.getElementById('ai-messages');
+    msgs.removeChild(msgs.lastChild);
+    addAiMessage('ai', '通信エラーが発生しました。もう一度お試しください。');
+    console.error('AI error:', e);
+  });
+}
+
+function sendAiFromInput() {
+  var input = document.getElementById('ai-input');
+  var msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  sendAiMessage(msg);
+}
+
+function clearAiChat() {
+  document.getElementById('ai-messages').innerHTML = '';
+  aiHistory = [];
+  addAiMessage('ai', 'こんにちは！Kenzai クラウドのAIコンシェルジュです。🏗️\n\n発注のサポート、資材の価格確認、発注状況の確認など、何でもお気軽にご相談ください！');
+}
+
+// ===== 資材検索AI =====
+function handleSearchImage(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    searchImageBase64 = e.target.result.split(',')[1];
+    document.getElementById('search-img-preview').innerHTML = '<img src="' + e.target.result + '" style="max-width:100%;border-radius:12px;">';
+  };
+  reader.readAsDataURL(file);
+}
+
+function searchMaterials() {
+  var textEl = document.getElementById('search-text');
+  var prompt = textEl ? textEl.value.trim() : '';
+  if (!prompt && !searchImageBase64) {
+    showToast('テキストまたは画像を入力してください', false);
+    return;
+  }
+  var btn = document.getElementById('search-btn');
+  btn.disabled = true;
+  btn.textContent = '🔍 検索中...';
+
+  var resultBox = document.getElementById('search-result');
+  if (resultBox) resultBox.innerHTML = '<p style="color:#999;text-align:center;">AIが資材を分析中...</p>';
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'claudeSearch', prompt: prompt, imageBase64: searchImageBase64 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.disabled = false;
+    btn.textContent = '🤖 AIで資材を探す';
+    var reply = data.reply || '結果を取得できませんでした。';
+    if (resultBox) resultBox.innerHTML = '<div style="white-space:pre-wrap;font-size:13px;line-height:1.6;">' + reply.replace(/\n/g, '<br>') + '</div>';
+  })
+  .catch(function(e) {
+    btn.disabled = false;
+    btn.textContent = '🤖 AIで資材を探す';
+    if (resultBox) resultBox.innerHTML = '<p style="color:red;">通信エラーが発生しました。</p>';
+    console.error('Search error:', e);
+  });
 }
 </script>
 </body>
