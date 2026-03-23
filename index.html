@@ -1343,13 +1343,20 @@ function sendAiMessage(msg) {
     + '【荷揚げ】+¥8,000\n'
     + '日本語で簡潔に回答してください。見積もり依頼には数量と合計金額を表形式で出してください。';
 
+  console.log('[AI] Sending to GAS_URL:', GAS_URL);
   fetch(GAS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
+    redirect: 'follow',
     body: JSON.stringify({ action: 'claudeChat', system: systemPrompt, messages: aiHistory.slice(-10) })
   })
-  .then(function(r) { return r.json(); })
+  .then(function(r) {
+    console.log('[AI] Response status:', r.status, r.statusText);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
+    return r.json();
+  })
   .then(function(data) {
+    console.log('[AI] Response data:', data);
     var msgs = document.getElementById('ai-messages');
     msgs.removeChild(msgs.lastChild);
     var reply = data.reply || 'エラーが発生しました。もう一度お試しください。';
@@ -1357,10 +1364,13 @@ function sendAiMessage(msg) {
     aiHistory.push({ role: 'assistant', content: reply });
   })
   .catch(function(e) {
+    console.error('[AI] Error details:', e);
+    console.error('[AI] Error name:', e.name);
+    console.error('[AI] Error message:', e.message);
+    console.error('[AI] Error stack:', e.stack);
     var msgs = document.getElementById('ai-messages');
     msgs.removeChild(msgs.lastChild);
-    addAiMessage('ai', '通信エラーが発生しました。もう一度お試しください。');
-    console.error('AI error:', e);
+    addAiMessage('ai', '通信エラーが発生しました。\n(' + e.message + ')');
   });
 }
 
@@ -1404,23 +1414,31 @@ function searchMaterials() {
   var resultBox = document.getElementById('search-result');
   if (resultBox) resultBox.innerHTML = '<p style="color:#999;text-align:center;">AIが資材を分析中...</p>';
 
+  console.log('[Search] Sending to GAS_URL:', GAS_URL);
   fetch(GAS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
+    redirect: 'follow',
     body: JSON.stringify({ action: 'claudeSearch', prompt: prompt, imageBase64: searchImageBase64 })
   })
-  .then(function(r) { return r.json(); })
+  .then(function(r) {
+    console.log('[Search] Response status:', r.status, r.statusText);
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
+    return r.json();
+  })
   .then(function(data) {
+    console.log('[Search] Response data:', data);
     btn.disabled = false;
     btn.textContent = '🤖 AIで資材を探す';
     var reply = data.reply || '結果を取得できませんでした。';
     if (resultBox) resultBox.innerHTML = '<div style="white-space:pre-wrap;font-size:13px;line-height:1.6;">' + reply.replace(/\n/g, '<br>') + '</div>';
   })
   .catch(function(e) {
+    console.error('[Search] Error details:', e);
+    console.error('[Search] Error message:', e.message);
     btn.disabled = false;
     btn.textContent = '🤖 AIで資材を探す';
-    if (resultBox) resultBox.innerHTML = '<p style="color:red;">通信エラーが発生しました。</p>';
-    console.error('Search error:', e);
+    if (resultBox) resultBox.innerHTML = '<p style="color:red;">通信エラー: ' + e.message + '</p>';
   });
 }
 </script>
