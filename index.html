@@ -209,7 +209,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .suggest-btn{background:var(--gl);border:1px solid var(--g);color:var(--gd);padding:7px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
 .suggest-btn:active{background:var(--g);color:#fff;}
 .ai-input-row{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid var(--border);}
-.ai-input{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-family:inherit;outline:none;background:#fafafa;}
+.ai-input{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-family:inherit;outline:none;background:#fafafa;resize:none;min-height:38px;max-height:120px;line-height:1.4;overflow-y:auto;}
 .ai-input:focus{border-color:var(--g);}
 .ai-send-btn{width:38px;height:38px;border-radius:50%;background:var(--g);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .ai-typing{display:flex;gap:4px;align-items:center;padding:8px 12px;}
@@ -648,7 +648,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
       <button class="suggest-btn" onclick="sendAiMessage('今月いくら発注した？')">📊 今月の発注状況</button>
     </div>
     <div class="ai-input-row">
-      <input type="text" class="ai-input" id="ai-input" placeholder="何でも聞いてください..." onkeydown="if(event.key==='Enter')sendAiFromInput()">
+      <textarea class="ai-input" id="ai-input" rows="1" placeholder="何でも聞いてください..."></textarea>
       <button class="ai-send-btn" onclick="sendAiFromInput()">➤</button>
     </div>
   </div>
@@ -1380,6 +1380,7 @@ function sendAiFromInput() {
   var msg = input.value.trim();
   if (!msg) return;
   input.value = '';
+  input.style.height = 'auto';
   sendAiMessage(msg);
 }
 
