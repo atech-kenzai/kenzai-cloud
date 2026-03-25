@@ -208,10 +208,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
 .ai-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;border-top:1px solid var(--border);background:#fff;}
 .suggest-btn{background:var(--gl);border:1px solid var(--g);color:var(--gd);padding:7px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
 .suggest-btn:active{background:var(--g);color:#fff;}
-.ai-input-row{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid var(--border);}
-.ai-input{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-family:inherit;outline:none;background:#fafafa;resize:none;min-height:38px;max-height:120px;line-height:1.4;overflow-y:auto;}
+.ai-input-row{display:flex;gap:8px;padding:10px 12px 20px;background:#fff;border-top:1px solid var(--border);}
+.ai-input{flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-family:inherit;outline:none;background:#fafafa;}
 .ai-input:focus{border-color:var(--g);}
-.ai-send-btn{width:38px;height:38px;border-radius:50%;background:var(--g);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ai-send-btn{width:44px;height:44px;border-radius:50%;background:var(--g);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;-webkit-tap-highlight-color:transparent;}
 .ai-typing{display:flex;gap:4px;align-items:center;padding:8px 12px;}
 .ai-typing span{width:7px;height:7px;border-radius:50%;background:var(--sub);animation:typing 1.2s infinite;}
 .ai-typing span:nth-child(2){animation-delay:.2s;}
@@ -611,20 +611,31 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
     <div class="sec-head" style="padding-top:14px;">📸 写真またはテキストで相談</div>
 
     <!-- 画像アップロード -->
-    <div class="search-drop-zone" onclick="document.getElementById('search-img-input').click()">
-      <div class="search-drop-icon">📷</div>
-      <div class="search-drop-text">写真をタップして選択</div>
-      <div class="search-drop-sub">「こういう資材が欲しい」という写真を送ってください</div>
+    <div style="padding:0 16px 12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--gl);border:2px solid var(--g);border-radius:var(--r);padding:16px 10px;cursor:pointer;text-align:center;">
+        <span style="font-size:28px;">📷</span>
+        <span style="font-size:12px;font-weight:700;color:var(--gd);">カメラで撮影</span>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleSearchImage(this)">
+      </label>
+      <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:16px 10px;cursor:pointer;text-align:center;">
+        <span style="font-size:28px;">🖼️</span>
+        <span style="font-size:12px;font-weight:700;color:var(--sub);">写真を選ぶ</span>
+        <input type="file" accept="image/*" style="display:none;" onchange="handleSearchImage(this)">
+      </label>
     </div>
-    <input type="file" id="search-img-input" accept="image/*" style="display:none;" onchange="handleSearchImage(this)">
-    <img id="search-preview" class="search-preview" style="display:none;">
+    <div id="search-preview-wrap" style="display:none;padding:0 16px 12px;">
+      <img id="search-preview" style="width:100%;max-height:200px;object-fit:cover;border-radius:var(--rs);border:2px solid var(--g);">
+      <div style="text-align:center;margin-top:6px;font-size:11px;color:var(--gd);font-weight:700;">✅ 写真が選択されました</div>
+    </div>
 
     <!-- テキスト入力 -->
     <textarea class="search-text-area" id="search-text" rows="3" placeholder="例：&#10;・壁に使う薄い板が欲しい&#10;・このくらいの厚さで軽いやつ&#10;・写真と同じような素材"></textarea>
 
     <!-- 検索ボタン -->
     <div style="padding:0 16px 14px;">
-      <button class="primary-btn" onclick="searchMaterials()" id="search-btn">🤖 AIで資材を探す</button>
+      <button style="width:100%;padding:16px;background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(6,199,85,.4);" onclick="searchMaterials()" id="search-btn">
+        🤖 AIで資材を探す
+      </button>
     </div>
 
     <!-- 結果エリア -->
@@ -648,8 +659,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh
       <button class="suggest-btn" onclick="sendAiMessage('今月いくら発注した？')">📊 今月の発注状況</button>
     </div>
     <div class="ai-input-row">
-      <textarea class="ai-input" id="ai-input" rows="1" placeholder="何でも聞いてください..."></textarea>
-      <button class="ai-send-btn" onclick="sendAiFromInput()">➤</button>
+      <input type="text" class="ai-input" id="ai-input" placeholder="何でも聞いてください..."
+        onkeyup="if(event.keyCode===13||event.which===13){sendAiFromInput();}"
+        oninput="document.getElementById('ai-send-btn').style.background=this.value.trim()?'var(--g)':'#ccc'">
+      <button class="ai-send-btn" id="ai-send-btn" onclick="sendAiFromInput()">➤</button>
     </div>
   </div>
 </div>
@@ -707,13 +720,29 @@ var CATEGORIES = [
       { name:"桧 90×90mm 3m 無節",      price:5800 },
       { name:"集成材 E120 120×240 4m",  price:8500 }
     ]}
+  ]},
+  { name:"金物・工具", items:[
+    { group:"金物・アンカー", products:[
+      { name:"袋ナット W3/8",            price:80   },
+      { name:"ウッドハンガー W3/8",      price:150  },
+      { name:"グリップアンカー W3/8",    price:120  }
+    ]},
+    { group:"テープ・消耗品", products:[
+      { name:"アルミテープ",             price:450  },
+      { name:"ピンネイル 15mm",          price:380  }
+    ]},
+    { group:"替刃ノミ", products:[
+      { name:"替刃ノミ 3分（9mm）",      price:280  },
+      { name:"替刃ノミ 4分（12mm）",     price:280  },
+      { name:"替刃ノミ 5分（15mm）",     price:300  },
+      { name:"替刃ノミ 8分（24mm）",     price:320  },
+      { name:"替刃ノミ 1寸（30mm）",     price:350  }
+    ]}
   ]}
 ];
 
 var cart     = {};
 var delivery = { site:"", address:"", contact:"", phone:"", siteTime:"", date:"", time:"午前8時〜午前10時", hoist:"no" };
-var aiHistory = [];
-var searchImageBase64 = null;
 var sites    = []; // スプシから取得した現場リスト
 
 // ===== 認証・会社管理 =====
@@ -1318,131 +1347,274 @@ function showToast(msg, success) {
 }
 
 // ===== AIコンシェルジュ =====
-function addAiMessage(type, text) {
-  var box = document.getElementById('ai-messages');
-  var div = document.createElement('div');
-  div.className = 'ai-msg ' + type;
-  div.innerHTML = text.replace(/\n/g, '<br>');
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
+var aiHistory = []; // Claude会話履歴
+
+function buildCatalogText() {
+  var lines = [];
+  CATEGORIES.forEach(function(cat) {
+    cat.items.forEach(function(group) {
+      group.products.forEach(function(p) {
+        var price = getPrice(p.name, p.price);
+        lines.push(p.name + '：¥' + price.toLocaleString());
+      });
+    });
+  });
+  return lines.join('\n');
 }
 
-function sendAiMessage(msg) {
-  addAiMessage('user', msg);
-  aiHistory.push({ role: 'user', content: msg });
-  addAiMessage('ai', '考え中...');
+var AI_SYSTEM_PROMPT = '';
+function getAiSystemPrompt() {
+  if (!AI_SYSTEM_PROMPT) {
+    AI_SYSTEM_PROMPT = 'あなたはKenzaiクラウドのAIコンシェルジュです。建設資材の発注をサポートします。\n'
+      + '以下がこのシステムで扱う資材カタログ（税込価格）です：\n\n'
+      + buildCatalogText() + '\n\n'
+      + 'オプション：荷揚げ（指定フロア搬入）＋¥8,000\n\n'
+      + 'ルール：\n'
+      + '- 価格はカタログに基づいて正確に回答してください\n'
+      + '- 必要枚数の計算は、3×6板（910mm×1820mm）を基準にしてください\n'
+      + '- カタログにない資材は「現在取り扱いがありません」と回答してください\n'
+      + '- 回答は簡潔に、箇条書きを使って見やすくしてください\n'
+      + '- 発注を促す場合は「ホーム画面の新規注文からどうぞ！」と案内してください\n'
+      + '- ユーザーの会社名：' + (currentCompany || '未設定');
+  }
+  return AI_SYSTEM_PROMPT;
+}
 
-  var systemPrompt = 'あなたはKenzaiクラウドのAIコンシェルジュです。建築資材の発注サポートを行います。\n'
-    + '取扱商品と価格（税別）：\n'
-    + '【石膏ボード】石膏ボード9.5mm 3×6 ¥500 / 石膏ボード12.5mm 3×6 ¥680 / 強化石膏ボード15mm 3×6 ¥820\n'
-    + '【ラワンベニヤ】3mm 3×6 ¥1,800 / 12mm 3×6 ¥2,400 / 24mm 3×6 ¥3,800\n'
-    + '【針葉樹合板】9mm 3×6 ¥1,600 / 12mm 3×6 ¥2,100 / 24mm 3×6 ¥2,900\n'
-    + '【タルキ赤松】45×45 4m ¥450 / 45×60 4m ¥580\n'
-    + '【杉・桧角材】杉105×105mm 3m ¥3,200 / 杉90×90mm 3m ¥2,800 / 桧90×90mm 3m無節 ¥5,800\n'
-    + '【集成材】E120 120×240 4m ¥8,500\n'
-    + '【荷揚げ】+¥8,000\n'
-    + '日本語で簡潔に回答してください。見積もり依頼には数量と合計金額を表形式で出してください。';
+function addAiMessage(role, text) {
+  var area = document.getElementById('ai-messages');
+  var now = new Date();
+  var timeStr = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
 
-  console.log('[AI] Sending to GAS_URL:', GAS_URL);
+  var row = document.createElement('div');
+  row.className = 'msg-row' + (role === 'user' ? ' user' : '');
+
+  var avatar = document.createElement('div');
+  avatar.className = 'msg-avatar ' + (role === 'user' ? 'user-av' : 'ai');
+  avatar.textContent = role === 'user' ? '👤' : '🤖';
+
+  var bubble = document.createElement('div');
+  bubble.className = 'msg-bubble ' + (role === 'user' ? 'user' : 'ai');
+  // 改行をbrタグに変換
+  bubble.innerHTML = text.replace(/\n/g, '<br>');
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  area.appendChild(row);
+
+  // 時刻
+  var timeDiv = document.createElement('div');
+  timeDiv.className = 'msg-time';
+  timeDiv.textContent = timeStr;
+  area.appendChild(timeDiv);
+
+  // 最下部にスクロール
+  area.scrollTop = area.scrollHeight;
+}
+
+function showAiTyping() {
+  var area = document.getElementById('ai-messages');
+  var typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'ai-typing-indicator';
+  typing.innerHTML = '<div class="msg-avatar ai" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;">🤖</div><span></span><span></span><span></span>';
+  area.appendChild(typing);
+  area.scrollTop = area.scrollHeight;
+}
+
+function hideAiTyping() {
+  var el = document.getElementById('ai-typing-indicator');
+  if (el) el.remove();
+}
+
+function sendAiMessage(text) {
+  if (!text || !text.trim()) return;
+  addAiMessage('user', text);
+
+  // 会話履歴に追加
+  aiHistory.push({ role: 'user', content: text });
+
+  // サジェスト非表示
+  document.getElementById('ai-suggestions').style.display = 'none';
+  showAiTyping();
+
+  // GAS経由でClaude API呼び出し
   fetch(GAS_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    redirect: 'follow',
-    body: JSON.stringify({ action: 'claudeChat', system: systemPrompt, messages: aiHistory.slice(-10) })
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'claudeChat',
+      system: getAiSystemPrompt(),
+      messages: aiHistory.slice(-10) // 直近10往復を送信
+    })
   })
-  .then(function(r) {
-    console.log('[AI] Response status:', r.status, r.statusText, 'type:', r.type, 'url:', r.url);
-    return r.text();
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    hideAiTyping();
+    if (data.status === 'ok' && data.reply) {
+      aiHistory.push({ role: 'assistant', content: data.reply });
+      addAiMessage('ai', data.reply);
+    } else {
+      addAiMessage('ai', '申し訳ありません、応答を取得できませんでした。もう一度お試しください。');
+    }
   })
-  .then(function(text) {
-    console.log('[AI] Raw response:', text);
-    var data;
-    try { data = JSON.parse(text); } catch(e) { throw new Error('JSON parse failed: ' + text.substring(0, 200)); }
-    var msgs = document.getElementById('ai-messages');
-    msgs.removeChild(msgs.lastChild);
-    var reply = data.reply || 'エラーが発生しました。もう一度お試しください。';
-    addAiMessage('ai', reply);
-    aiHistory.push({ role: 'assistant', content: reply });
-  })
-  .catch(function(e) {
-    console.error('[AI] Error details:', e);
-    console.error('[AI] Error name:', e.name);
-    console.error('[AI] Error message:', e.message);
-    console.error('[AI] Error stack:', e.stack);
-    var msgs = document.getElementById('ai-messages');
-    msgs.removeChild(msgs.lastChild);
-    addAiMessage('ai', '通信エラーが発生しました。\n(' + e.message + ')');
+  .catch(function(err) {
+    hideAiTyping();
+    addAiMessage('ai', '⚠️ 通信エラーが発生しました。電波状況をご確認の上、再度お試しください。');
   });
 }
 
 function sendAiFromInput() {
   var input = document.getElementById('ai-input');
-  var msg = input.value.trim();
-  if (!msg) return;
+  var text = input.value.trim();
+  if (!text) return;
   input.value = '';
-  input.style.height = 'auto';
-  sendAiMessage(msg);
+  document.getElementById('ai-send-btn').style.background = '#ccc';
+  sendAiMessage(text);
 }
 
 function clearAiChat() {
-  document.getElementById('ai-messages').innerHTML = '';
   aiHistory = [];
+  AI_SYSTEM_PROMPT = ''; // 価格変更に対応するためリセット
+  document.getElementById('ai-messages').innerHTML = '';
+  document.getElementById('ai-suggestions').style.display = 'flex';
   addAiMessage('ai', 'こんにちは！Kenzai クラウドのAIコンシェルジュです。🏗️\n\n発注のサポート、資材の価格確認、発注状況の確認など、何でもお気軽にご相談ください！');
 }
 
 // ===== 資材検索AI =====
+var searchImageBase64 = '';
+
 function handleSearchImage(input) {
   var file = input.files && input.files[0];
   if (!file) return;
+
   var reader = new FileReader();
   reader.onload = function(e) {
-    searchImageBase64 = e.target.result.split(',')[1];
-    document.getElementById('search-img-preview').innerHTML = '<img src="' + e.target.result + '" style="max-width:100%;border-radius:12px;">';
+    var dataUrl = e.target.result;
+    // プレビュー表示
+    document.getElementById('search-preview').src = dataUrl;
+    document.getElementById('search-preview-wrap').style.display = 'block';
+    // Base64データを保持（data:image/...;base64, の後の部分）
+    searchImageBase64 = dataUrl.split(',')[1] || '';
   };
   reader.readAsDataURL(file);
 }
 
 function searchMaterials() {
-  var textEl = document.getElementById('search-text');
-  var prompt = textEl ? textEl.value.trim() : '';
-  if (!prompt && !searchImageBase64) {
-    showToast('テキストまたは画像を入力してください', false);
+  var text = document.getElementById('search-text').value.trim();
+  if (!text && !searchImageBase64) {
+    showToast('テキストまたは写真を入力してください');
     return;
   }
+
+  var resultsArea = document.getElementById('search-results');
+  resultsArea.innerHTML =
+    '<div class="search-analyzing">'
+    + '<div class="search-analyzing-icon">🔍</div>'
+    + '<div style="font-size:14px;font-weight:700;margin-bottom:4px;">AIが資材を分析中...</div>'
+    + '<div style="font-size:12px;">最適な資材を提案します</div>'
+    + '</div>';
+
   var btn = document.getElementById('search-btn');
   btn.disabled = true;
-  btn.textContent = '🔍 検索中...';
+  btn.textContent = '🔄 分析中...';
 
-  var resultBox = document.getElementById('search-result');
-  if (resultBox) resultBox.innerHTML = '<p style="color:#999;text-align:center;">AIが資材を分析中...</p>';
+  var prompt = '';
+  if (searchImageBase64 && text) {
+    prompt = '写真に写っている資材と、以下の要望を踏まえて、カタログから最適な資材を提案してください。\n要望：' + text;
+  } else if (searchImageBase64) {
+    prompt = '写真に写っている資材を特定し、カタログから最適な資材を提案してください。';
+  } else {
+    prompt = '以下の要望に合う資材をカタログから提案してください。\n要望：' + text;
+  }
 
-  console.log('[Search] Sending to GAS_URL:', GAS_URL);
+  prompt += '\n\n必ず以下のJSON配列形式で回答してください（JSON以外の文字は含めないこと）：\n'
+    + '[{"name":"品目名（カタログ通り）","price":数値,"reason":"推薦理由（30文字以内）","match":80}]\n'
+    + 'matchは要望との一致度（0〜100）です。最大3件まで提案してください。';
+
+  var systemPrompt = '資材提案AIです。以下のカタログから最適な資材を提案します。\n\n'
+    + buildCatalogText()
+    + '\n\n回答はJSON配列のみで返してください。マークダウンのコードブロックは使わないでください。';
+
+  var payload = {
+    action: 'claudeSearch',
+    system: systemPrompt,
+    prompt: prompt
+  };
+  if (searchImageBase64) {
+    payload.imageBase64 = searchImageBase64;
+  }
+
   fetch(GAS_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    redirect: 'follow',
-    body: JSON.stringify({ action: 'claudeSearch', prompt: prompt, imageBase64: searchImageBase64 })
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
   })
-  .then(function(r) {
-    console.log('[Search] Response status:', r.status, r.statusText, 'type:', r.type, 'url:', r.url);
-    return r.text();
-  })
-  .then(function(text) {
-    console.log('[Search] Raw response:', text);
-    var data;
-    try { data = JSON.parse(text); } catch(e) { throw new Error('JSON parse failed: ' + text.substring(0, 200)); }
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
     btn.disabled = false;
     btn.textContent = '🤖 AIで資材を探す';
-    var reply = data.reply || '結果を取得できませんでした。';
-    if (resultBox) resultBox.innerHTML = '<div style="white-space:pre-wrap;font-size:13px;line-height:1.6;">' + reply.replace(/\n/g, '<br>') + '</div>';
+
+    if (data.status === 'ok' && data.reply) {
+      try {
+        // JSONパース（前後の余分な文字を除去）
+        var cleaned = data.reply.replace(/```json?/g, '').replace(/```/g, '').trim();
+        var recommendations = JSON.parse(cleaned);
+        renderSearchResults(recommendations);
+      } catch(e) {
+        // JSONパースに失敗した場合はテキストで表示
+        resultsArea.innerHTML =
+          '<div style="padding:16px;">'
+          + '<div class="sec-head" style="padding:0 0 8px;">🤖 AIの回答</div>'
+          + '<div style="background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shadow);font-size:13px;line-height:1.7;">'
+          + data.reply.replace(/\n/g, '<br>')
+          + '</div></div>';
+      }
+    } else {
+      resultsArea.innerHTML =
+        '<div style="text-align:center;padding:24px;color:var(--sub);font-size:13px;">'
+        + '⚠️ 分析に失敗しました。もう一度お試しください。</div>';
+    }
   })
-  .catch(function(e) {
-    console.error('[Search] Error details:', e);
-    console.error('[Search] Error message:', e.message);
+  .catch(function() {
     btn.disabled = false;
     btn.textContent = '🤖 AIで資材を探す';
-    if (resultBox) resultBox.innerHTML = '<p style="color:red;">通信エラー: ' + e.message + '</p>';
+    resultsArea.innerHTML =
+      '<div style="text-align:center;padding:24px;color:var(--sub);font-size:13px;">'
+      + '⚠️ 通信エラーが発生しました。再度お試しください。</div>';
   });
+}
+
+function renderSearchResults(items) {
+  var area = document.getElementById('search-results');
+  area.innerHTML = '<div class="sec-head" style="padding-top:8px;">🎯 おすすめ資材</div>';
+
+  if (!items || items.length === 0) {
+    area.innerHTML += '<div style="text-align:center;padding:24px;color:var(--sub);font-size:13px;">該当する資材が見つかりませんでした</div>';
+    return;
+  }
+
+  items.forEach(function(item) {
+    var card = document.createElement('div');
+    card.className = 'recommend-card';
+    card.innerHTML =
+      '<div class="recommend-top">'
+      + '<div class="recommend-name">' + (item.name || '不明') + '</div>'
+      + '<div class="recommend-price">¥' + (item.price || 0).toLocaleString() + '</div>'
+      + '</div>'
+      + '<div class="recommend-reason">' + (item.reason || '') + '</div>'
+      + '<div class="recommend-match">🎯 一致度 ' + (item.match || 0) + '%</div>'
+      + '<button class="recommend-add-btn" onclick="addRecommendToCart(this,\'' + (item.name || '').replace(/'/g, "\\'") + '\',' + (item.price || 0) + ')">🛒 カートに追加する</button>';
+    area.appendChild(card);
+  });
+}
+
+function addRecommendToCart(btn, name, price) {
+  if (btn.classList.contains('added')) return;
+  if (!cart[name]) cart[name] = { price: price, qty: 0 };
+  cart[name].qty += 1;
+  btn.textContent = '✅ カートに追加済み';
+  btn.classList.add('added');
+  showToast('🛒 ' + name + ' をカートに追加しました', true);
 }
 </script>
 </body>
